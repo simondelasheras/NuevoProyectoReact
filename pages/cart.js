@@ -13,7 +13,7 @@ export default function Cart() {
         dispatch({type: 'CART_REMOVE_ITEM', payload: item})
     }
 
-    //funcion para actualizar el carrito
+
     const updateCartHandler = (item, qty)=>{
         const quantity = Number(qty)
         dispatch({type: 'CARD_ADD_ITEM', payload:{...item, quantity}})

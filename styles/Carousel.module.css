@@ -1,0 +1,14 @@
+/* Estilo con Fuente "Bookman Old Style" y Sombreado ligeramente más suave para el título */
+.carouselTitle {
+  font-family: "Bookman Old Style", serif;
+  font-weight: bold;
+  color: white;
+  text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black, 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.carouselBody {
+  font-family: "Bookman Old Style", serif;
+  font-weight: bold;
+  color: black;
+  text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white, 2px 2px 4px rgba(255, 255, 255, 0.5);
+}

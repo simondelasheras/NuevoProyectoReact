@@ -12,9 +12,9 @@ export default function ProductItem({product}) {
             <p className='card-text'>{product.category}</p>
             <p className='card-text'>{product.price}$</p>
             <Link href={`/product/${product.slug}`}>
-                <a> <button className='btn btn-primary' >
+                 <button className='btn btn-primary' >
                 View product
-            </button></a>
+            </button>
             </Link>
             
         </div>
