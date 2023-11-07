@@ -1,0 +1,33 @@
+
+/* Estilos específicos para la primera tarjeta */
+.firstCard {
+  margin-left: -23px; /* Margen derecho a 0 para la primera tarjeta */
+  width: 100%; /* Ajusta el tamaño de las imágenes al 100% del ancho de la tarjeta */
+  max-width: 100%; /* Limita el ancho máximo de la imagen al 100% */
+  height: auto; /* Permite que la altura se ajuste automáticamente en función del ancho */
+}
+
+/* Estilos específicos para la segunda tarjeta */
+.secondCard {
+  margin-left: 36px; /* Margen izquierdo a 0 para la segunda tarjeta */
+  width: 100%; /* Ajusta el tamaño de las imágenes al 100% del ancho de la tarjeta */
+  max-width: 100%; /* Limita el ancho máximo de la imagen al 100% */
+  height: auto; /* Permite que la altura se ajuste automáticamente en función del ancho */
+}
+
+.cardTitle {
+  position: absolute;
+  bottom: 40px; /* Ajusta la distancia desde la parte inferior */
+  left: 0;
+  right: 0;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.3); /* Fondo más difuminado (mayor opacidad) */
+  color: #fff; /* Color del texto */
+  padding: 10px; /* Espacio alrededor del título */
+  text-shadow: 6px 6px 12px rgba(0, 0, 0, 0.6); /* Borde al texto aún más pronunciado */
+}
+
+
+
+
+
