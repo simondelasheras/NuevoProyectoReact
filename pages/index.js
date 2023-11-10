@@ -5,6 +5,8 @@ import ProductItem from "../components/ProductItem";
 import data from "../utils/data";
 import BootstrapCarousel from "../components/Carousel";
 import Card from "../components/Card";
+import { renderProductCategory } from "../utils/ProductUtils";
+import Link from "next/link";
 
 
 export default function Home() {
@@ -28,11 +30,14 @@ export default function Home() {
       <div>
         <h2 className="text-center mt-5 mb-5">List of products</h2>
         <div className="container">
-          <div className="row row-cols-1 row-cols-md-2 g-4">
-            {data.products.map((product) => (
-              <ProductItem key={product.slug} product={product} />
-            ))}
-          </div>
+          <h2 className="text-center mt-5 mb-5" id="men-section">Men</h2>
+          {renderProductCategory("Men", "Top")}
+          {renderProductCategory("Men", "Bottom")}
+          {renderProductCategory("Men", "Shoes")}
+          <h2 className="text-center mt-5 mb-5" id="women-section" >Women</h2>
+          {renderProductCategory("Women", "Top")}
+          {renderProductCategory("Women", "Bottom")}
+          {renderProductCategory("Women", "Shoes")}
         </div>
       </div>
     </div>
