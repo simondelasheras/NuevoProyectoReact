@@ -3,7 +3,7 @@ const data = {
     {
       name: "Jersey Boca Jrs",
       type: "Football",
-      price: "55.000",
+      price: "60",
       patent: "Adidas",
       category: "Top",
       gender: "Men",
@@ -15,7 +15,7 @@ const data = {
     {
       name: "Jersey River Plate",
       type: "Football",
-      price: "55.000",
+      price: "60",
       patent: "Adidas",
       category: "Top",
       gender: "Men",
@@ -27,7 +27,7 @@ const data = {
     {
       name: "Hoodie Argentina",
       type: "Football",
-      price: "60.000",
+      price: "70",
       patent: "Adidas",
       category: "Top",
       gender: "Men",
@@ -39,7 +39,7 @@ const data = {
     {
       name: "Hoodie Grey",
       type: "Training",
-      price: "40.000",
+      price: "45",
       patent: "Nike",
       category: "Top",
       gender: "Men",
@@ -50,8 +50,8 @@ const data = {
     },
     {
       name: "Short Boca Juniors",
-      type: "Futbol",
-      price: "20.000",
+      type: "Football",
+      price: "25",
       patent: "Adidas",
       category: "Bottom",
       gender: "Men",
@@ -63,7 +63,7 @@ const data = {
     {
       name: "Short River Plate",
       type: "Football",
-      price: "20.000",
+      price: "25",
       patent: "Adidas",
       category: "Bottom",
       gender: "Men",
@@ -75,7 +75,7 @@ const data = {
     {
       name: "Athletic Pants Argentina",
       type: "Football",
-      price: "44.000",
+      price: "50",
       patent: "Adidas",
       category: "Bottom",
       gender: "Men",
@@ -87,7 +87,7 @@ const data = {
     {
       name: "Athletic Pants",
       type: "Training",
-      price: "24.000",
+      price: "30",
       patent: "Under Armour",
       category: "Bottom",
       gender: "Men",
@@ -99,7 +99,7 @@ const data = {
     {
       name: "Shoes",
       type: "Urban",
-      price: "40.000",
+      price: "45",
       patent: "Adidas",
       category: "Shoes",
       gender: "Men",
@@ -111,7 +111,7 @@ const data = {
     {
       name: "Shoes",
       type: "Running",
-      price: "47.000",
+      price: "50",
       patent: "Nike",
       category: "Shoes",
       gender: "Men",
@@ -123,7 +123,7 @@ const data = {
     {
       name: "Shoes",
       type: "Running",
-      price: "65.000",
+      price: "75",
       patent: "Nike",
       category: "Shoes",
       gender: "Men",
@@ -135,7 +135,7 @@ const data = {
     {
       name: "Shoes",
       type: "Running",
-      price: "33.000",
+      price: "40",
       patent: "Puma",
       category: "Shoes",
       gender: "Men",
@@ -147,7 +147,7 @@ const data = {
     {
       name: "Shirt Lila",
       type: "Training",
-      price: "8.000",
+      price: "20",
       patent: "Topper",
       category: "Top",
       gender: "Women",
@@ -159,7 +159,7 @@ const data = {
     {
       name: "Shirt Black",
       type: "Training",
-      price: "11.000",
+      price: "25",
       patent: "Fila",
       category: "Top",
       gender: "Women",
@@ -171,7 +171,7 @@ const data = {
     {
       name: "Hoodie Black",
       type: "Training",
-      price: "26.000",
+      price: "30",
       patent: "Fila",
       category: "Top",
       gender: "Women",
@@ -183,7 +183,7 @@ const data = {
     {
       name: "Hoodie Red",
       type: "Training",
-      price: "35.000",
+      price: "40",
       patent: "Under Armour",
       category: "Top",
       gender: "Women",
@@ -195,7 +195,7 @@ const data = {
     {
       name: "Short",
       type: "Training",
-      price: "19.000",
+      price: "20",
       patent: "Under Armour",
       category: "Bottom",
       gender: "Women",
@@ -207,7 +207,7 @@ const data = {
     {
       name: "Skort",
       type: "Training",
-      price: "35.000",
+      price: "40",
       patent: "Adidas",
       category: "Bottom",
       gender: "Women",
@@ -219,7 +219,7 @@ const data = {
     {
       name: "Athletic Leggings",
       type: "Training",
-      price: "51.000",
+      price: "55",
       patent: "Under Armor",
       category: "Bottom",
       gender: "Women",
@@ -231,7 +231,7 @@ const data = {
     {
       name: "Athletic Leggings",
       type: "Training",
-      price: "16.000",
+      price: "20",
       patent: "Puma",
       category: "Bottom",
       gender: "Women",
@@ -243,7 +243,7 @@ const data = {
     {
       name: "Shoes",
       type: "Running",
-      price: "40.000",
+      price: "45",
       patent: "Adidas",
       category: "Shoes",
       gender: "Women",
@@ -255,7 +255,7 @@ const data = {
     {
       name: "Shoes",
       type: "Running",
-      price: "47.000",
+      price: "55",
       patent: "Adidas",
       category: "Shoes",
       gender: "Women",
@@ -267,7 +267,7 @@ const data = {
     {
       name: "Shoes",
       type: "Running",
-      price: "65.000",
+      price: "75",
       patent: "Adidas",
       category: "Shoes",
       gender: "Women",
@@ -279,7 +279,7 @@ const data = {
     {
       name: "Shoes",
       type: "Running",
-      price: "33.000",
+      price: "40",
       patent: "Adidas",
       category: "Shoes",
       gender: "Women",

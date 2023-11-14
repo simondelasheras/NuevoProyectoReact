@@ -1,0 +1,11 @@
+/* ProductDetails.module.css */
+.productDetails {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.productImage {
+  width: 100%; /* Ajusta según tus necesidades */
+  height: auto; /* Para mantener la proporción original */
+}
