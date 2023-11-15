@@ -1,14 +1,23 @@
-import '../styles/globals.css'
-import 'bootstrap/dist/css/bootstrap.min.css'
-import { StoreProvider } from '../utils/Store'
+// pages/_app.js
+
+import "../styles/globals.css";
+import { useEffect } from "react";
+import { StoreProvider } from "../utils/Store";
 
 function MyApp({ Component, pageProps }) {
-  return(
+  useEffect(() => {
+    // Importa Bootstrap solo en el lado del cliente
+    if (typeof window !== "undefined") {
+      require("bootstrap/dist/css/bootstrap.min.css");
+      require("bootstrap/dist/js/bootstrap.bundle.min.js");
+    }
+  }, []);
+
+  return (
     <StoreProvider>
       <Component {...pageProps} />
     </StoreProvider>
-  )
-  
+  );
 }
 
-export default MyApp
+export default MyApp;

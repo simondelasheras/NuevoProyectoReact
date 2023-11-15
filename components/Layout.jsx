@@ -1,18 +1,52 @@
-import React, { useContext, useEffect, useState } from 'react'
-import Head from 'next/head'
-import Link from 'next/link'
-import { Store } from '../utils/Store'
+// components/Layout.jsx
 
-export default function Layout({title,children}) {
-  const {state, dispatch} = useContext(Store)
+import React, { useContext, useEffect, useState } from "react";
+import Head from "next/head";
+import Link from "next/link";
+import dynamic from "next/dynamic"; // Importa dynamic desde next
+import { Store } from "../utils/Store";
 
-  const {cart}=state
+// Carga dinámica de OffcanvasContent
+const OffcanvasContent = dynamic(() => import("./OffcanvasContent"), {
+  ssr: false,
+});
 
-  const [cartItemsCount, setcartItemsCount] = useState(0)
+export default function Layout({ title, children }) {
+  const { state, dispatch } = useContext(Store);
+  const { cart } = state;
 
-  useEffect(()=>{
-    setcartItemsCount(cart.cartItems.reduce((a, c ) => a + c.quantity, 0))
-  },[cart.cartItems])
+  const [cartItemsCount, setCartItemsCount] = useState(0);
+  const [bootstrapLoaded, setBootstrapLoaded] = useState(
+    typeof window !== "undefined" && window.bootstrapLoaded
+  );
+
+  useEffect(() => {
+    setCartItemsCount(cart.cartItems.reduce((a, c) => a + c.quantity, 0));
+  }, [cart.cartItems]);
+
+  const openOffcanvas = async () => {
+    try {
+      // Importa Bootstrap solo en el lado del cliente si no está cargado
+      if (typeof window !== "undefined" && !window.bootstrapLoaded) {
+        const bootstrap = await import(
+          "bootstrap/dist/js/bootstrap.bundle.min.js"
+        );
+        console.log("Bootstrap loaded");
+        window.bootstrap = bootstrap;
+        window.bootstrapLoaded = true;
+      }
+
+      // Verifica si `window.bootstrap` está definido antes de crear Offcanvas
+      if (typeof window !== "undefined" && window.bootstrap) {
+        const offcanvas = new window.bootstrap.Offcanvas(
+          document.getElementById("offcanvasRight")
+        );
+        offcanvas.show();
+      }
+    } catch (error) {
+      console.error("Error loading Bootstrap:", error);
+    }
+  };
 
   return (
     <div>
@@ -41,12 +75,17 @@ export default function Layout({title,children}) {
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav ms-auto">
               <li className="nav-item">
-                <Link className="nav-link" href="/cart">
+                {/* Abre el offcanvas al hacer clic en el enlace del carrito */}
+                <a
+                  href="javascript:void(0);"
+                  className="nav-link"
+                  onClick={openOffcanvas}
+                >
                   Cart{" "}
                   <span className="text-white bg-danger rounded p-1">
                     {cartItemsCount}
                   </span>{" "}
-                </Link>
+                </a>
               </li>
 
               <li className="nav-item">
@@ -60,6 +99,9 @@ export default function Layout({title,children}) {
       </nav>
 
       <main>{children}</main>
+
+      {/* Offcanvas */}
+      <OffcanvasContent />
     </div>
   );
 }
