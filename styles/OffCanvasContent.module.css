@@ -1,0 +1,138 @@
+/* OffcanvasContent.module.css */
+
+.shopping-cart-title {
+  font-size: 1.6rem;
+  color: black;
+}
+
+.offcanvas {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.offcanvas-header {
+  background-color: white;
+  color: black;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.cart-content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.cart-content-title {
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+}
+
+.cart-items-list {
+  list-style-type: none;
+  padding: 0;
+  max-height: calc(100% - 120px);
+  overflow-y: auto;
+}
+
+.cart-item {
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cart-item-image-container {
+  margin-right: 10px;
+}
+
+.cart-item-image {
+  width: 120px;
+  height: 120px;
+}
+
+.cart-item-details {
+  display: flex;
+  align-items: center;
+}
+
+.cart-item-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.cart-item-name {
+  font-size: 1.2rem;
+  margin-bottom: 5px;
+}
+
+.cart-item-quantity,
+.cart-item-price,
+.cart-item-subtotal {
+  margin-bottom: 5px;
+}
+
+.cart-item-actions {
+  display: flex;
+  flex-direction: column;
+}
+
+.btn-remove-one,
+.btn-remove-all,
+.btn-clear-cart {
+  margin-top: 5px;
+  cursor: pointer;
+}
+
+.btn-clear-cart {
+  margin-top: 15px;
+  cursor: pointer;
+  position: sticky;
+  top: 50px;
+  z-index: 1;
+}
+
+.btn-remove-one,
+.btn-remove-all {
+  margin-top: 5px;
+  cursor: pointer;
+  color: #fff !important;
+  background-color: #e64843 !important;
+  border-color: #e64843 !important;
+  transition: filter 0.3s ease, opacity 0.3s ease, background-color 0s !important;
+  text-decoration: none !important; /* Elimina el subrayado de los enlaces */
+  outline: none !important; /* Elimina el contorno en el foco */
+  width: 150px; /* Establece un ancho fijo */
+  height: 40px; /* Establece una altura fija */
+}
+
+/* Elimina el estilo específico para el hover/focus de los botones de remove */
+.btn-remove-one:hover,
+.btn-remove-all:hover,
+.btn-remove-one:focus,
+.btn-remove-all:focus {
+  background-color: #e64843 !important;
+  outline: none !important;
+  /*Eliminaelcontornoenelfoco*/
+  filter: brightness(95%);
+  /* Oscurece ligeramente al hacer hover */
+  -webkit-filter: brightness(90%);
+}
+
+/* Estilo específico para el estado activo de los botones de remove */
+.btn-remove-one:active,
+.btn-remove-all:active {
+  filter: none !important; /* Elimina el filtro de luminosidad cuando se hace clic */
+  opacity: 1 !important; /* Restaura la opacidad completa cuando se hace clic */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Agrega un efecto de sombra al hacer clic */
+  transform: scale(0.98); /* Reduce ligeramente el tamaño al hacer clic */
+}

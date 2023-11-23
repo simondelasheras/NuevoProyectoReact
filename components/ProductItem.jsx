@@ -14,12 +14,12 @@ export default function ProductItem({ product }) {
   const handleShow = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
 
-const handleQuantityChange = (e) => {
-  const quantity = parseInt(e.target.value, 10);
-  setSelectedQuantity(quantity);
-  // Agregar la siguiente línea para quitar el enfoque después de la selección
-  e.target.blur();
-};
+  const handleQuantityChange = (e) => {
+    const quantity = parseInt(e.target.value, 10);
+    setSelectedQuantity(quantity);
+    // Agregar la siguiente línea para quitar el enfoque después de la selección
+    e.target.blur();
+  };
 
   const addToCartHandler = () => {
     if (product.countInStock < selectedQuantity) {
@@ -93,12 +93,12 @@ const handleQuantityChange = (e) => {
               </div>
             </Modal.Body>
             <Modal.Footer>
-              <Button variant="secondary" onClick={handleClose}>
-                Close
-              </Button>
-              {/* Agregar al carrito con la cantidad seleccionada */}
+              {/* Invierte el orden de los botones */}
               <Button variant="primary" onClick={addToCartHandler}>
                 Add to Cart
+              </Button>
+              <Button variant="secondary" onClick={handleClose}>
+                Close
               </Button>
             </Modal.Footer>
           </Modal>
@@ -124,11 +124,12 @@ const handleQuantityChange = (e) => {
               </p>
             </Modal.Body>
             <Modal.Footer>
-              <Button variant="secondary" onClick={cancelPurchaseHandler}>
-                No
-              </Button>
+              {/* Invierte el orden de los botones */}
               <Button variant="primary" onClick={confirmPurchaseHandler}>
                 Yes
+              </Button>
+              <Button variant="secondary" onClick={cancelPurchaseHandler}>
+                No
               </Button>
             </Modal.Footer>
           </Modal>
