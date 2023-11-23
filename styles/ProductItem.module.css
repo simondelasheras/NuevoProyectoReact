@@ -1,0 +1,20 @@
+/* ProductItem.module.css */
+
+/* Estilo para encuadrar sutilmente el subtotal */
+.subtotalFrame {
+  border: 1px solid #666;
+  /*Cambia#666alcolorqueprefieras*/padding: 0.2em 0.5em;
+  border-radius: 3px;
+  display: inline-block;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+}
+
+/* Estilo para aplicar a la cantidad */
+.quantityFrame {
+  font-weight: bold;
+  /* Agrega otros estilos según sea necesario */
+}
+
