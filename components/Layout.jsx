@@ -5,6 +5,8 @@ import Head from "next/head";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { Store } from "../utils/Store";
+import styles from "../styles/Logo.module.css";
+
 
 const OffcanvasContent = dynamic(() => import("./OffCanvasContent"), {
   ssr: false,
@@ -53,10 +55,10 @@ export default function Layout({ title, children }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+      <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div className="container">
-          <Link className="navbar-brand" href="/">
-            Storage
+          <Link href="/">
+            <img src="https://i.imgur.com/I9dtU8W.png" alt="Power-Sport-Logo" className={styles.navbarImg} />
           </Link>
           <button
             className="navbar-toggler"
@@ -71,6 +73,31 @@ export default function Layout({ title, children }) {
           </button>
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav ms-auto">
+
+            <li className="nav-item">
+                <Link href="/" className="nav-link">
+                  Home
+                </Link>
+              </li>
+
+              <li className="nav-item">
+                <Link href="#shop-section" className="nav-link">
+                  Shop
+                </Link>
+              </li>
+
+              <li className="nav-item">
+                <Link href="" className="nav-link">
+                  About
+                </Link>
+              </li>
+
+              <li className="nav-item">
+                <Link href="" className="nav-link">
+                  Contact
+                </Link>
+              </li>
+
               <li className="nav-item">
                 <a href="#" className="nav-link" onClick={openOffcanvas}>
                   Cart{" "}
@@ -80,11 +107,6 @@ export default function Layout({ title, children }) {
                 </a>
               </li>
 
-              <li className="nav-item">
-                <Link className="nav-link" href="">
-                  Others
-                </Link>
-              </li>
             </ul>
           </div>
         </div>
