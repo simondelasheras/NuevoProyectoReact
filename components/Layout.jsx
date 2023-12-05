@@ -58,7 +58,7 @@ export default function Layout({ title, children }) {
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div className="container">
           <Link href="/">
-            <img src="https://i.imgur.com/I9dtU8W.png" alt="Power-Sport-Logo" className={styles.navbarImg} />
+            <img src="https://i.imgur.com/1cIziLP.png" alt="Power-Sport-Logo" className={styles.navbarImg} />
           </Link>
           <button
             className="navbar-toggler"
@@ -81,7 +81,7 @@ export default function Layout({ title, children }) {
               </li>
 
               <li className="nav-item">
-                <Link href="#shop-section" className="nav-link">
+                <Link href="#shop" className="nav-link">
                   Shop
                 </Link>
               </li>
