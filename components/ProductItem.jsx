@@ -1,15 +1,37 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Modal, Button } from "react-bootstrap";
+import axios from "axios";
 import ProductDetails from "./ProductDetails";
 import { Store } from "../utils/Store";
 import styles from "../styles/ProductItem.module.css";
 
+// Declara la función getData en el mismo archivo
+const getData = async (dispatch) => {
+  try {
+    const res = await axios.get("http://localhost:5000/products");
+
+    // Despacha la acción para actualizar el estado
+    dispatch({
+      type: "READ_STATE",
+      payload: { products: res.data },
+    });
+  } catch (error) {
+    console.error("Error getting data:", error);
+  }
+};
+
 export default function ProductItem({ product }) {
+  const { state, dispatch } = useContext(Store);
+
+  // Llama a la función getData dentro de useEffect
+  useEffect(() => {
+    getData(dispatch);
+  }, []); // Ejecuta solo una vez al montar el componente
+
   const [showModal, setShowModal] = useState(false);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [selectedQuantity, setSelectedQuantity] = useState(1);
-  const { state, dispatch } = useContext(Store);
 
   const handleShow = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
@@ -21,21 +43,49 @@ export default function ProductItem({ product }) {
     e.target.blur();
   };
 
-  const addToCartHandler = () => {
-    if (product.countInStock < selectedQuantity) {
-      alert("Sorry. Product is out of stock");
-      return;
-    }
+
+  const { cart, products } = state;
+
+
+  const addToCartHandler = (clickedProduct) => {
+    // Esta función ahora solo actualiza el estado local y muestra el segundo modal
+    dispatch({
+      type: "CART_ADD_ITEM",
+      payload: { ...clickedProduct, quantity: 1 },
+    });
 
     setShowModal(false);
     setShowConfirmationModal(true);
   };
 
-  const confirmPurchaseHandler = () => {
-    dispatch({
-      type: "CARD_ADD_ITEM",
-      payload: { ...product, quantity: selectedQuantity },
-    });
+  const confirmPurchaseHandler = async () => {
+    try {
+      console.log(product);
+
+      const productInStock = products.find((p) => p.id === product.id);
+      console.log(products);
+      console.log(productInStock);
+
+      if (productInStock && productInStock.countInStock > 0) {
+        // Realiza una solicitud POST para agregar el producto al carrito
+        await axios.post("http://localhost:5000/cart", {
+          ...product,
+          quantity: 1,
+        });
+
+        // Realiza una solicitud PATCH para actualizar el stock del producto
+        await axios.patch(`http://localhost:5000/products/${product.id}`, {
+          inStock: productInStock.inStock - 1,
+        });
+
+        // Llama a la función para obtener los datos actualizados
+        getData(dispatch);
+      } else {
+        console.log("Producto no disponible");
+      }
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+    }
 
     setShowModal(false);
     setShowConfirmationModal(false);

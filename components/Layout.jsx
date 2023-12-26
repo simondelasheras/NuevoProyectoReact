@@ -15,9 +15,13 @@ export default function Layout({ title, children }) {
   const { cart } = state;
 
   const [cartItemsCount, setCartItemsCount] = useState(0);
-  const [bootstrapLoaded, setBootstrapLoaded] = useState(
-    typeof window !== "undefined" && window.bootstrapLoaded
-  );
+
+  useEffect(() => {
+    // Verifica si cart y cartItems están definidos antes de usar reduce
+    if (cart && cart.cartItems) {
+      setCartItemsCount(cart.cartItems.reduce((a, c) => a + c.quantity, 0));
+    }
+  }, [cart]);
 
   const openOffcanvas = async () => {
     try {
@@ -40,10 +44,6 @@ export default function Layout({ title, children }) {
       console.error("Error loading Bootstrap:", error);
     }
   };
-
-  useEffect(() => {
-    setCartItemsCount(cart.cartItems.reduce((a, c) => a + c.quantity, 0));
-  }, [cart.cartItems]);
 
   return (
     <div>
