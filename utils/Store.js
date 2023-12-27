@@ -47,42 +47,54 @@ function reducer(state, action) {
         cart: { cartItems },
       };
     }
-    case "CART_ADD_ITEM": {
-      const { id, quantity } = action.payload;
-      const productToAdd = state.products.find((product) => product.id === id);
+case "CART_ADD_ITEM": {
+  const { id, quantity } = action.payload;
+  const productToAdd = state.products.find((product) => product.id === id);
 
-      if (!productToAdd) {
-        console.error("Product not found:", id);
-        return state;
-      }
+  if (!productToAdd) {
+    console.error("Product not found:", id);
+    return state;
+  }
 
-      // Verifica si state.cart y state.cart.cartItems están definidos
-      const existingCart = state.cart || {};
-      const existingCartItems = existingCart.cartItems || [];
+  const existingCart = state.cart || {};
+  const existingCartItems = existingCart.cartItems || [];
 
-      // Verifica si el producto ya está en el carrito
-      const existingItemIndex = existingCartItems.findIndex(
-        (item) => item.id === id
-      );
+  const existingItemIndex = existingCartItems.findIndex(
+    (item) => item.id === id
+  );
 
-      const updatedCartItems = [...existingCartItems];
+  const updatedCartItems = [...existingCartItems];
 
-      if (existingItemIndex !== -1) {
-        // El artículo ya está en el carrito, actualiza la cantidad
-        updatedCartItems[existingItemIndex].quantity += quantity;
-      } else {
-        // El artículo no está en el carrito, agrégalo
-        updatedCartItems.push({ ...productToAdd, quantity });
-      }
+  if (existingItemIndex !== -1) {
+    updatedCartItems[existingItemIndex].inCart += quantity;
+  } else {
+    updatedCartItems.push({ ...productToAdd, inCart: quantity });
+  }
 
-      return {
-        ...state,
-        cart: {
-          ...existingCart,
-          cartItems: updatedCartItems,
-        },
-      };
-    }
+  // Actualiza el stock en el carrito y en products
+  const updatedProducts = state.products.map((product) =>
+    product.id === id
+      ? {
+          ...product,
+          countInStock: Math.max(product.countInStock - quantity, 0),
+          inCart: product.inCart + quantity,
+        }
+      : product
+  );
+
+  // Actualiza el stock en el endpoint "cart"
+  const updatedCart = {
+    ...existingCart,
+    cartItems: updatedCartItems,
+  };
+
+  // Agrega las actualizaciones al estado
+  return {
+    ...state,
+    products: updatedProducts,
+    cart: updatedCart,
+  };
+}v
 
     case "CART_REMOVE_ITEM": {
       const cartItems = state.cart.cartItems.filter(

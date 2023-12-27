@@ -23,6 +23,7 @@ const getData = async (dispatch) => {
 
 export default function ProductItem({ product }) {
   const { state, dispatch } = useContext(Store);
+  
 
   // Llama a la función getData dentro de useEffect
   useEffect(() => {
@@ -48,10 +49,9 @@ export default function ProductItem({ product }) {
 
 
   const addToCartHandler = (clickedProduct) => {
-    // Esta función ahora solo actualiza el estado local y muestra el segundo modal
     dispatch({
       type: "CART_ADD_ITEM",
-      payload: { ...clickedProduct, quantity: 1 },
+      payload: { ...clickedProduct, quantity: selectedQuantity },
     });
 
     setShowModal(false);
@@ -60,26 +60,27 @@ export default function ProductItem({ product }) {
 
   const confirmPurchaseHandler = async () => {
     try {
-      console.log(product);
-
       const productInStock = products.find((p) => p.id === product.id);
-      console.log(products);
-      console.log(productInStock);
 
-      if (productInStock && productInStock.countInStock > 0) {
+      if (productInStock && productInStock.countInStock >= selectedQuantity) {
         // Realiza una solicitud POST para agregar el producto al carrito
         await axios.post("http://localhost:5000/cart", {
           ...product,
-          quantity: 1,
+          inCart: selectedQuantity, // Utiliza la cantidad seleccionada por el usuario
         });
 
         // Realiza una solicitud PATCH para actualizar el stock del producto
         await axios.patch(`http://localhost:5000/products/${product.id}`, {
-          inStock: productInStock.inStock - 1,
+          countInStock: productInStock.countInStock - selectedQuantity, // Resta la cantidad seleccionada
         });
 
+        // Actualiza la propiedad inCart en los productos
+        const updatedProducts = state.products.map((p) =>
+          p.id === product.id ? { ...p, inCart: p.inCart + selectedQuantity } : p
+        );
+
         // Llama a la función para obtener los datos actualizados
-        getData(dispatch);
+        getData(dispatch, updatedProducts);
       } else {
         console.log("Producto no disponible");
       }
