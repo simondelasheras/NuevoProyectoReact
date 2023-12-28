@@ -38,8 +38,8 @@ export default function ProductItem({ product }) {
   const handleClose = () => setShowModal(false);
 
   const handleQuantityChange = (e) => {
-    const quantity = parseInt(e.target.value, 10);
-    setSelectedQuantity(quantity);
+    const selectedQuantity = parseInt(e.target.value, 10);
+    setSelectedQuantity(selectedQuantity);
     // Agregar la siguiente línea para quitar el enfoque después de la selección
     e.target.blur();
   };
@@ -48,16 +48,18 @@ export default function ProductItem({ product }) {
   const { cart, products } = state;
 
 
-  const addToCartHandler = (clickedProduct) => {
+const addToCartHandler = (product) => {
+
+  if (!isNaN(selectedQuantity) && selectedQuantity > 0) {
     dispatch({
       type: "CART_ADD_ITEM",
-      payload: { ...clickedProduct, quantity: selectedQuantity },
+      payload: { ...product, quantity: selectedQuantity },
     });
 
     setShowModal(false);
     setShowConfirmationModal(true);
-  };
-
+  }
+}
   const confirmPurchaseHandler = async () => {
     try {
       const productInStock = products.find((p) => p.id === product.id);
@@ -71,13 +73,22 @@ export default function ProductItem({ product }) {
 
         // Realiza una solicitud PATCH para actualizar el stock del producto
         await axios.patch(`http://localhost:5000/products/${product.id}`, {
-          countInStock: productInStock.countInStock - selectedQuantity, // Resta la cantidad seleccionada
+          ...product,
+          countInStock: productInStock.countInStock, // Resta la cantidad seleccionada
+          inCart: productInStock.inCart
         });
+        
+        const updatedProducts = state.products.map((p) => {
+          const updatedProduct =
+            p.id === product.id
+              ? { ...p, inCart: p.inCart + selectedQuantity }
+              : p;
 
-        // Actualiza la propiedad inCart en los productos
-        const updatedProducts = state.products.map((p) =>
-          p.id === product.id ? { ...p, inCart: p.inCart + selectedQuantity } : p
-        );
+          // Console.log para verificar el valor de selectedQuantity
+          
+
+          return updatedProduct;
+        });
 
         // Llama a la función para obtener los datos actualizados
         getData(dispatch, updatedProducts);
@@ -145,7 +156,7 @@ export default function ProductItem({ product }) {
             </Modal.Body>
             <Modal.Footer>
               {/* Invierte el orden de los botones */}
-              <Button variant="primary" onClick={addToCartHandler}>
+              <Button variant="primary" onClick={() => addToCartHandler(product)}>
                 Add to Cart
               </Button>
               <Button variant="secondary" onClick={handleClose}>
