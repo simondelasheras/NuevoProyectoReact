@@ -51,57 +51,46 @@ export default function ProductItem({ product }) {
 const addToCartHandler = (product) => {
 
   if (!isNaN(selectedQuantity) && selectedQuantity > 0) {
-    dispatch({
-      type: "CART_ADD_ITEM",
-      payload: { ...product, quantity: selectedQuantity },
-    });
+    // dispatch({
+    //   type: "CART_ADD_ITEM",
+    //   payload: { ...product, quantity: selectedQuantity },
+    // });
 
     setShowModal(false);
     setShowConfirmationModal(true);
   }
 }
-  const confirmPurchaseHandler = async () => {
-    try {
-      const productInStock = products.find((p) => p.id === product.id);
+const confirmPurchaseHandler = async () => {
+  try {
+    const productInStock = products.find((p) => p.id === product.id);
 
-      if (productInStock && productInStock.countInStock >= selectedQuantity) {
-        // Realiza una solicitud POST para agregar el producto al carrito
-        await axios.post("http://localhost:5000/cart", {
-          ...product,
-          inCart: selectedQuantity, // Utiliza la cantidad seleccionada por el usuario
-        });
+    if (productInStock && productInStock.countInStock >= selectedQuantity) {
+      // Realiza una solicitud POST para agregar el producto al array cartItems
+      await axios.post("http://localhost:5001/cart", {
+        ...product,
+        countInStock: productInStock.countInStock - selectedQuantity,
+        inCart: productInStock.inCart + selectedQuantity,
+      });
 
-        // Realiza una solicitud PATCH para actualizar el stock del producto
-        await axios.patch(`http://localhost:5000/products/${product.id}`, {
-          ...product,
-          countInStock: productInStock.countInStock, // Resta la cantidad seleccionada
-          inCart: productInStock.inCart
-        });
-        
-        const updatedProducts = state.products.map((p) => {
-          const updatedProduct =
-            p.id === product.id
-              ? { ...p, inCart: p.inCart + selectedQuantity }
-              : p;
+      // Realiza una solicitud PATCH para actualizar el stock del producto
+      await axios.patch(`http://localhost:5000/products/${product.id}`, {
+        ...product,
+        countInStock: productInStock.countInStock - selectedQuantity,
+        inCart: productInStock.inCart + selectedQuantity,
+      });
 
-          // Console.log para verificar el valor de selectedQuantity
-          
-
-          return updatedProduct;
-        });
-
-        // Llama a la función para obtener los datos actualizados
-        getData(dispatch, updatedProducts);
-      } else {
-        console.log("Producto no disponible");
-      }
-    } catch (error) {
-      console.error("Error adding to cart:", error);
+      // Llama a la función para obtener los datos actualizados
+      getData(dispatch);
+    } else {
+      console.log("Producto no disponible");
     }
+  } catch (error) {
+    console.error("Error adding to cart:", error);
+  }
 
-    setShowModal(false);
-    setShowConfirmationModal(false);
-  };
+  setShowModal(false);
+  setShowConfirmationModal(false);
+};
 
   const cancelPurchaseHandler = () => {
     setShowConfirmationModal(false);

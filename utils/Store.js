@@ -15,7 +15,7 @@ const initialState = {
 const getData = async (dispatch) => {
   try {
     const resProducts = await axios("http://localhost:5000/products");
-    const resCart = await axios("http://localhost:5000/cart");
+    const resCart = await axios("http://localhost:5001/cart");
 
     const newProducts = resProducts.data;
     const newCartItem = resCart.data;
@@ -47,63 +47,49 @@ function reducer(state, action) {
         cart: { cartItems },
       };
     }
-    case "CART_ADD_ITEM": {
-      const { id, quantity } = action.payload;
+    // case "CART_ADD_ITEM": {
+    //   const { id, quantity } = action.payload;
 
-      // Verifica si state.products está definido y es un array
-      if (!state.products || !Array.isArray(state.products)) {
-        console.error("Products not found or not in the expected format");
-        return state;
-      }
+    //   // Verifica si state.cart está definido y tiene la propiedad cartItems
+    //   if (!state.cart || !state.cart.cartItems) {
+    //     console.error("Cart not found or not in the expected format");
+    //     return state;
+    //   }
 
-      console.log("ID to find:", id);
+    //   const productToAdd = state.products.find((product) => product.id === id);
 
-      const productToAdd = state.products.find((product) => product.id === id);
+    //   if (!productToAdd) {
+    //     console.error("Product not found:", id);
+    //     return state;
+    //   }
 
-      if (!productToAdd) {
-        console.error("Product not found:", id);
-        return state;
-      }
+    //   const existingCart = state.cart || {};
+    //   const existingCartItems = existingCart.cartItems || [];
 
-      const existingCart = state.cart || {};
-      const existingCartItems = existingCart.cartItems || [];
+    //   const existingItemIndex = existingCartItems.findIndex(
+    //     (item) => item.id === id
+    //   );
 
-      const existingItemIndex = existingCartItems.findIndex(
-        (item) => item.id === id
-      );
+    //   const updatedCartItems = [...existingCartItems];
 
-      const updatedCartItems = [...existingCartItems];
+    //   if (existingItemIndex !== -1) {
+    //     updatedCartItems[existingItemIndex].inCart += quantity;
+    //   } else {
+    //     updatedCartItems.push({ ...productToAdd, inCart: quantity });
+    //   }
 
-      if (existingItemIndex !== -1) {
-        updatedCartItems[existingItemIndex].inCart += quantity;
-      } else {
-        updatedCartItems.push({ ...productToAdd, inCart: quantity });
-      }
+    //   // Actualiza el array cartItems en el estado del carrito
+    //   const updatedCart = {
+    //     ...existingCart,
+    //     cartItems: updatedCartItems,
+    //   };
 
-      // Actualiza el stock en products y en cart
-      const updatedProducts = state.products.map((product) =>
-        product.id === id
-          ? {
-              ...product,
-              countInStock: Math.max(product.countInStock - quantity, 0),
-              inCart: product.inCart + quantity,
-            }
-          : product
-      );
-
-      // Actualiza el stock en el endpoint "cart"
-      const updatedCart = {
-        ...existingCart,
-        cartItems: updatedCartItems,
-      };
-
-      // Agrega las actualizaciones al estado
-      return {
-        ...state,
-        products: updatedProducts,
-        cart: updatedCart,
-      };
-    }
+    //   // Agrega las actualizaciones al estado
+    //   return {
+    //     ...state,
+    //     cart: updatedCart,
+    //   };
+    // }
 
     case "CART_REMOVE_ITEM": {
       const cartItems = state.cart.cartItems.filter(
