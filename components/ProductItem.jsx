@@ -10,11 +10,14 @@ import styles from "../styles/ProductItem.module.css";
 const getData = async (dispatch) => {
   try {
     const res = await axios.get("http://localhost:5000/products");
-
+    const res2 = await axios.get("http://localhost:5001/cart");
     // Despacha la acción para actualizar el estado
     dispatch({
       type: "READ_STATE",
-      payload: { products: res.data },
+      payload: { 
+        products: res.data ,
+        cart: res2.data,
+      },
     });
   } catch (error) {
     console.error("Error getting data:", error);
@@ -62,19 +65,36 @@ const addToCartHandler = (product) => {
 }
 const confirmPurchaseHandler = async () => {
   try {
-    const productInStock = products.find((p) => p.id === product.id);
+    console.log(state);
 
+    const productInStock = products.find((p) => p.id === product.id);
+    console.log(cart);
+    const existingCartItem = cart.cartItems.find((p) => {
+      console.log("product.id:", product.id);
+      console.log("p.id:", p.id);
+      return p.id === product.id;
+    });
+    // const existingCartItem = cart.cartItems.find((p) => p.id === product.id);
+    console.log("Existing Cart Item:", existingCartItem);
     if (productInStock && productInStock.countInStock >= selectedQuantity) {
-      // Realiza una solicitud POST para agregar el producto al array cartItems
-      await axios.post("http://localhost:5001/cart", {
-        ...product,
-        countInStock: productInStock.countInStock - selectedQuantity,
-        inCart: productInStock.inCart + selectedQuantity,
-      });
+      if (existingCartItem) {
+        // Si el producto ya está en el carrito, actualiza la cantidad
+        // const newQuantity = existingCartItem.inCart + selectedQuantity;
+        await axios.patch(`http://localhost:5001/cart/${existingCartItem.id}`, {
+          countInStock: existingCartItem.countInStock - selectedQuantity,
+          inCart: existingCartItem.inCart + selectedQuantity,
+        });
+      } else {
+        // Si el producto no está en el carrito, agrégalo
+        await axios.post("http://localhost:5001/cart", {
+          ...product,
+          countInStock: productInStock.countInStock - selectedQuantity,
+          inCart: productInStock.inCart + selectedQuantity,
+        });
+      }
 
       // Realiza una solicitud PATCH para actualizar el stock del producto
       await axios.patch(`http://localhost:5000/products/${product.id}`, {
-        ...product,
         countInStock: productInStock.countInStock - selectedQuantity,
         inCart: productInStock.inCart + selectedQuantity,
       });
@@ -84,6 +104,8 @@ const confirmPurchaseHandler = async () => {
     } else {
       console.log("Producto no disponible");
     }
+    console.log("Cart después de la operación:", cart);
+
   } catch (error) {
     console.error("Error adding to cart:", error);
   }
@@ -91,6 +113,7 @@ const confirmPurchaseHandler = async () => {
   setShowModal(false);
   setShowConfirmationModal(false);
 };
+
 
   const cancelPurchaseHandler = () => {
     setShowConfirmationModal(false);

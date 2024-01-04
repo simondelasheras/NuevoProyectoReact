@@ -6,30 +6,35 @@ export const Store = createContext();
 
 const initialState = {
   products: [],
-  cart: {
-    cartItems: [],
-  },
+  cart:  []
 };
 
 // Función para obtener datos y actualizar el estado
 const getData = async (dispatch) => {
   try {
+    console.log("Fetching products from http://localhost:5000/products...");
     const resProducts = await axios("http://localhost:5000/products");
+    console.log("Products data:", resProducts.data);
+
+    console.log("Fetching cart data from http://localhost:5001/cart...");
     const resCart = await axios("http://localhost:5001/cart");
+    console.log("Cart data:", resCart.data);
 
     const newProducts = resProducts.data;
     const newCartItem = resCart.data;
 
-
-    const cartItems = (newCartItem && newCartItem.cartItems) || [];
+    const cartItems = (newCartItem) || [];
+    console.log("Cart items:", cartItems);
 
     dispatch({
       type: "READ_STATE",
       payload: {
         products: newProducts,
-        cart: { cartItems },
+        cart: 0,
       },
     });
+
+    console.log("State updated successfully!");
   } catch (error) {
     console.error("Error updating state:", error);
   }
@@ -39,8 +44,8 @@ function reducer(state, action) {
   switch (action.type) {
     case "READ_STATE": {
       const cartItems =
-        (action.payload.cart && action.payload.cart.cartItems) || [];
-
+        (action.payload.cart) || [];
+      console.log(state);
       return {
         ...state,
         products: action.payload.products,
