@@ -58,7 +58,7 @@ const addToCartHandler = (product) => {
     //   type: "CART_ADD_ITEM",
     //   payload: { ...product, quantity: selectedQuantity },
     // });
-
+    
     setShowModal(false);
     setShowConfirmationModal(true);
   }
@@ -112,6 +112,7 @@ const confirmPurchaseHandler = async () => {
 
   setShowModal(false);
   setShowConfirmationModal(false);
+  setSelectedQuantity(1);
 };
 
 

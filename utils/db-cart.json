@@ -1,3 +1,88 @@
 {
-  "cart": []
+  "cart": [
+    {
+      "name": "Jersey Boca Jrs",
+      "type": "Football",
+      "price": "60",
+      "patent": "Adidas",
+      "category": "Top",
+      "gender": "Men",
+      "slug": "Jersey Boca Jrs",
+      "image": "/images/remeram1.jpg",
+      "countInStock": 15,
+      "description": "",
+      "id": 1,
+      "inCart": 5
+    },
+    {
+      "name": "Jersey River Plate",
+      "type": "Football",
+      "price": "60",
+      "patent": "Adidas",
+      "category": "Top",
+      "gender": "Men",
+      "slug": "Jersey River Plate",
+      "image": "/images/remeram2.jpg",
+      "countInStock": 10,
+      "description": "",
+      "id": 2,
+      "inCart": 10
+    },
+    {
+      "name": "Hoodie Argentina",
+      "type": "Football",
+      "price": "70",
+      "patent": "Adidas",
+      "category": "Top",
+      "gender": "Men",
+      "slug": "Hoodie Argentina",
+      "image": "/images/buzom1.jpg",
+      "countInStock": 17,
+      "description": "",
+      "id": 3,
+      "inCart": 3
+    },
+    {
+      "name": "Hoodie Grey",
+      "type": "Training",
+      "price": "45",
+      "patent": "Nike",
+      "category": "Top",
+      "gender": "Men",
+      "slug": "Hoodie Grey",
+      "image": "/images/buzom2.jpg",
+      "countInStock": 19,
+      "description": "",
+      "id": 4,
+      "inCart": 1
+    },
+    {
+      "name": "Short Boca Juniors",
+      "type": "Football",
+      "price": "25",
+      "patent": "Adidas",
+      "category": "Bottom",
+      "gender": "Men",
+      "slug": "Short Boca Juniors",
+      "image": "/images/shortm1.jpg",
+      "countInStock": 17,
+      "description": "",
+      "id": 5,
+      "inCart": 3
+    },
+    {
+      "name": "Short River Plate",
+      "type": "Football",
+      "price": "25",
+      "patent": "Adidas",
+      "category": "Bottom",
+      "gender": "Men",
+      "slug": "Short River Plate",
+      "image": "/images/shortm2.jpg",
+      "countInStock": 0,
+      "description": "",
+      "id": 6,
+      "inCart": 20
+    }
+  ]
 }
