@@ -12,19 +12,19 @@ const initialState = {
 // Función para obtener datos y actualizar el estado
 const getData = async (dispatch) => {
   try {
-    console.log("Fetching products from http://localhost:5000/products...");
+    
     const resProducts = await axios("http://localhost:5000/products");
-    console.log("Products data:", resProducts.data);
+    
 
-    console.log("Fetching cart data from http://localhost:5001/cart...");
+    
     const resCart = await axios("http://localhost:5001/cart");
-    console.log("Cart data:", resCart.data);
+    
 
     const newProducts = resProducts.data;
     const newCartItem = resCart.data;
 
     const cartItems = (newCartItem) || [];
-    console.log("Cart items:", cartItems);
+    
 
     dispatch({
       type: "READ_STATE",
@@ -43,9 +43,8 @@ const getData = async (dispatch) => {
 function reducer(state, action) {
   switch (action.type) {
     case "READ_STATE": {
-      const cartItems =
-        (action.payload.cart) || [];
-      console.log(state);
+      const cartItems = action.payload.cart || [];
+
       return {
         ...state,
         products: action.payload.products,
@@ -105,13 +104,14 @@ function reducer(state, action) {
     }
 
     case "CART_REMOVE_ONE_ITEM": {
+
       const cartItems = state.cart.cartItems
         .map((item) =>
           item.id === action.payload.id
-            ? { ...item, quantity: item.quantity - 1 }
+            ? { ...item, inCart: item.inCart - 1 }
             : item
         )
-        .filter((item) => item.quantity > 0);
+        .filter((item) => item.inCart > 0);
 
       return { ...state, cart: { ...state.cart, cartItems } };
     }

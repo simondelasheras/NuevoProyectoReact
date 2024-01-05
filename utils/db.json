@@ -9,10 +9,10 @@
       "gender": "Men",
       "slug": "Jersey Boca Jrs",
       "image": "/images/remeram1.jpg",
-      "countInStock": 15,
+      "countInStock": 20,
       "description": "",
       "id": 1,
-      "inCart": 5
+      "inCart": 0
     },
     {
       "name": "Jersey River Plate",
@@ -23,10 +23,10 @@
       "gender": "Men",
       "slug": "Jersey River Plate",
       "image": "/images/remeram2.jpg",
-      "countInStock": 10,
+      "countInStock": 20,
       "description": "",
       "id": 2,
-      "inCart": 10
+      "inCart": 0
     },
     {
       "name": "Hoodie Argentina",
@@ -37,10 +37,10 @@
       "gender": "Men",
       "slug": "Hoodie Argentina",
       "image": "/images/buzom1.jpg",
-      "countInStock": 17,
+      "countInStock": 20,
       "description": "",
       "id": 3,
-      "inCart": 3
+      "inCart": 0
     },
     {
       "name": "Hoodie Grey",
@@ -51,10 +51,10 @@
       "gender": "Men",
       "slug": "Hoodie Grey",
       "image": "/images/buzom2.jpg",
-      "countInStock": 19,
+      "countInStock": 20,
       "description": "",
       "id": 4,
-      "inCart": 1
+      "inCart": 0
     },
     {
       "name": "Short Boca Juniors",
@@ -65,10 +65,10 @@
       "gender": "Men",
       "slug": "Short Boca Juniors",
       "image": "/images/shortm1.jpg",
-      "countInStock": 17,
+      "countInStock": 20,
       "description": "",
       "id": 5,
-      "inCart": 3
+      "inCart": 0
     },
     {
       "name": "Short River Plate",
@@ -79,10 +79,10 @@
       "gender": "Men",
       "slug": "Short River Plate",
       "image": "/images/shortm2.jpg",
-      "countInStock": 0,
+      "countInStock": 20,
       "description": "",
       "id": 6,
-      "inCart": 20
+      "inCart": 0
     },
     {
       "name": "Athletic Pants Argentina",

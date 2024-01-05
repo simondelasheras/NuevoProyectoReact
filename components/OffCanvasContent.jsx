@@ -4,6 +4,23 @@ import { Store } from "../utils/Store";
 import styles from "../styles/OffCanvasContent.module.css";
 import axios from "axios";
 
+const getData = async (dispatch) => {
+  try {
+    const res = await axios.get("http://localhost:5000/products");
+    const res2 = await axios.get("http://localhost:5001/cart");
+    // Despacha la acción para actualizar el estado
+    dispatch({
+      type: "READ_STATE",
+      payload: {
+        products: res.data,
+        cart: res2.data,
+      },
+    });
+  } catch (error) {
+    console.error("Error getting data:", error);
+  }
+};
+
 const OffcanvasContent = ({ offcanvasInstance }) => {
   const { state, dispatch } = useContext(Store);
   const { cart, products } = state;
@@ -11,7 +28,7 @@ const OffcanvasContent = ({ offcanvasInstance }) => {
   const removeFromCartHandler = async (id) => {
     try {
       // Realiza una solicitud DELETE para eliminar el producto del carrito
-      await axios.delete(`http://localhost:5000/cart/${id}`);
+      await axios.delete(`http://localhost:5001/cart/${id}`);
 
       // Despacha una acción para actualizar el estado del carrito
       dispatch({ type: "CART_REMOVE_ITEM", payload: { id } });
@@ -21,42 +38,70 @@ const OffcanvasContent = ({ offcanvasInstance }) => {
 
       // Incrementa el stock en la base de datos
       await axios.patch(`http://localhost:5000/products/${id}`, {
-        inStock: product.inStock + 1,
+        countInStock: product.countInStock + product.inCart,
+        inCart: 0
       });
+      getData(dispatch);
     } catch (error) {
       console.error("Error removing from cart:", error);
     }
   };
 
-  const removeOneFromCartHandler = async (id) => {
-    try {
-      // Realiza una solicitud PATCH para eliminar una unidad del producto del carrito
-      await axios.patch(`http://localhost:5000/cart/${id}`);
+const removeOneFromCartHandler = async (id) => {
+  try {
+    const product = state.products.find((p) => p.id === id);
 
-      // Despacha una acción para actualizar el estado del carrito
+    if (product.inCart > 1) {
+      await axios.patch(`http://localhost:5001/cart/${id}`, {
+        countInStock: product.countInStock + 1,
+        inCart: product.inCart - 1,
+      });
+
       dispatch({ type: "CART_REMOVE_ONE_ITEM", payload: { id } });
+
+      await axios.patch(`http://localhost:5000/products/${id}`, {
+        countInStock: product.countInStock + 1,
+        inCart: product.inCart - 1,
+      });
+
+      // Llama a la función para obtener los datos actualizados
+      getData(dispatch);
+    } else {
+      await axios.delete(`http://localhost:5001/cart/${id}`);
+      dispatch({ type: "CART_REMOVE_ITEM", payload: { id } });
+      await axios.patch(`http://localhost:5000/products/${id}`, {
+        countInStock: product.countInStock + 1,
+        inCart: 0,
+      });
+
+      // Llama a la función para obtener los datos actualizados
+      getData(dispatch);
+    }
+  } catch (error) {
+    console.error("Error removing one from cart:", error);
+  }
+};
+
+
+  const clearCartHandler = async () => {
+    try {
+      // Realiza una solicitud DELETE para limpiar el carrito
+      await axios.delete("http://localhost:5001/cart");
+
+      // Despacha una acción para limpiar el estado del carrito
+      dispatch({ type: "CART_CLEAR" });
 
       // Obtén el producto correspondiente al id
       const product = state.products.find((p) => p.id === id);
 
       // Incrementa el stock en la base de datos
       await axios.patch(`http://localhost:5000/products/${id}`, {
-        inStock: product.inStock + 1,
+        countInStock: product.countInStock + product.inCart,
+        inCart: 0,
       });
+      getData(dispatch);
     } catch (error) {
-      console.error("Error removing one from cart:", error);
-    }
-  };
-
-  const clearCartHandler = async () => {
-    try {
-      // Realiza una solicitud DELETE para limpiar el carrito
-      await axios.delete("http://localhost:5000/cart");
-
-      // Despacha una acción para limpiar el estado del carrito
-      dispatch({ type: "CART_CLEAR" });
-    } catch (error) {
-      console.error("Error clearing cart:", error);
+      console.error("Error removing from cart:", error);
     }
   };
 
@@ -98,13 +143,13 @@ const OffcanvasContent = ({ offcanvasInstance }) => {
                   <div className={styles["cart-item-info"]}>
                     <div className={styles["cart-item-name"]}>{item.name}</div>
                     <div className={styles["cart-item-quantity"]}>
-                      Quantity: {item.quantity}
+                      Quantity: {item.inCart}
                     </div>
                     <div className={styles["cart-item-price"]}>
                       Price: ${item.price}
                     </div>
                     <div className={styles["cart-item-subtotal"]}>
-                      Subtotal: ${item.quantity * item.price}
+                      Subtotal: ${item.inCart * item.price}
                     </div>
                     <div className={styles["cart-item-actions"]}>
                       <button
@@ -132,14 +177,17 @@ const OffcanvasContent = ({ offcanvasInstance }) => {
           <div className={styles["cart-total"]}>
             <div className={styles["cart-total-label"]}>Total:</div>
             <div className={styles["cart-total-amount"]}>
-              ${cart.cartItems.reduce((a, c) => a + c.quantity * c.price, 0)}
+              ${cart.cartItems.reduce((a, c) => a + c.inCart * c.price, 0)}
             </div>
           </div>
         )}
         {cart && cart.cartItems && cart.cartItems.length > 0 && (
           <button
             className={`btn btn-primary ${styles["btn-clear-cart"]}`}
-            onClick={clearCartHandler}
+            onClick={() => {
+              console.log("Botón Clear Cart presionado");
+              clearCartHandler();
+            }}
           >
             Clear Cart
           </button>

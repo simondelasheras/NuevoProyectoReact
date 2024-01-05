@@ -73,7 +73,7 @@ export default function Layout({ title, children }) {
                 <a href="#" className="nav-link" onClick={openOffcanvas}>
                   Cart{" "}
                   <span className="text-white bg-danger rounded p-1">
-                    {Number.isNaN(cartItemsCount) ? 0 : cartItemsCount}
+                    {cart && cart.cartItems ? cart.cartItems.length : 0}
                   </span>{" "}
                 </a>
               </li>
