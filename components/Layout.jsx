@@ -87,13 +87,13 @@ export default function Layout({ title, children }) {
               </li>
 
               <li className="nav-item">
-                <Link href="" className="nav-link">
+                <Link href="#footer" className="nav-link">
                   About
                 </Link>
               </li>
 
               <li className="nav-item">
-                <Link href="" className="nav-link">
+                <Link href="#footer" className="nav-link">
                   Contact
                 </Link>
               </li>
