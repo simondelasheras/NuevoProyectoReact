@@ -20,11 +20,14 @@ export default function Home() {
         </Head>
         <Layout title={"home page"}></Layout>
         <main>
-          <BootstrapCarousel />
+          <BootstrapCarousel/>
         </main>
       </div>
+
       <div>
+      <section id="shop">
         <h2 className="text-center mt-5 mb-5">Shop</h2>
+      </section>
         <Card />
       </div>
       <div>
