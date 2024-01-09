@@ -147,6 +147,7 @@ const confirmPurchaseHandler = async () => {
                   <strong>Quantity:</strong>&nbsp;
                 </label>
                 <select
+                  className={styles["quantity-selector"]}
                   id="quantity"
                   value={selectedQuantity}
                   onChange={handleQuantityChange}
@@ -169,7 +170,10 @@ const confirmPurchaseHandler = async () => {
             </Modal.Body>
             <Modal.Footer>
               {/* Invierte el orden de los botones */}
-              <Button variant="primary" onClick={() => addToCartHandler(product)}>
+              <Button
+                variant="primary"
+                onClick={() => addToCartHandler(product)}
+              >
                 Add to Cart
               </Button>
               <Button variant="secondary" onClick={handleClose}>

@@ -83,27 +83,51 @@ const removeOneFromCartHandler = async (id) => {
 };
 
 
-  const clearCartHandler = async () => {
-    try {
-      // Realiza una solicitud DELETE para limpiar el carrito
-      await axios.delete("http://localhost:5001/cart");
+const clearCartHandler = async () => {
+  try {
+    // Obtener los IDs de todos los elementos en el carrito
+    const cartItemIds = state.cart.cartItems.map((item) => item.id);
 
-      // Despacha una acción para limpiar el estado del carrito
-      dispatch({ type: "CART_CLEAR" });
-
-      // Obtén el producto correspondiente al id
-      const product = state.products.find((p) => p.id === id);
-
-      // Incrementa el stock en la base de datos
-      await axios.patch(`http://localhost:5000/products/${id}`, {
-        countInStock: product.countInStock + product.inCart,
-        inCart: 0,
-      });
-      getData(dispatch);
-    } catch (error) {
-      console.error("Error removing from cart:", error);
+    // Eliminar elementos del carrito
+    for (const id of cartItemIds) {
+      try {
+        await axios.delete(`http://localhost:5001/cart/${id}`);
+      } catch (error) {
+        console.error(`Error deleting item with ID ${id}:`, error);
+      }
     }
-  };
+
+    // Despachar una acción para limpiar el estado del carrito
+    dispatch({ type: "CART_CLEAR" });
+
+    // Actualizar el stock en la base de datos
+    for (const item of state.cart.cartItems) {
+      try {
+        const product = state.products.find((p) => p.id === item.id);
+        await axios.patch(`http://localhost:5000/products/${item.id}`, {
+          countInStock: product.countInStock + item.inCart,
+          inCart: 0,
+        });
+      } catch (error) {
+        console.error(
+          `Error updating stock for item with ID ${item.id}:`,
+          error
+        );
+      }
+    }
+
+    // Esperar un momento antes de obtener datos nuevamente
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    // Actualizar el estado con los productos del carrito actualizado
+    getData(dispatch);
+  } catch (error) {
+    console.error("Error removing from cart:", error);
+  }
+};
+
+
+
 
   return (
     <div

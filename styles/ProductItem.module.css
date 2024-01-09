@@ -1,20 +1,28 @@
 /* ProductItem.module.css */
 
-/* Estilo para encuadrar sutilmente el subtotal */
+/* Estilos para encuadrar sutilmente el subtotal */
 .subtotalFrame {
   border: 1px solid #666;
-  /*Cambia#666alcolorqueprefieras*/padding: 0.2em 0.5em;
+  padding: 0.2em 0.5em;
   border-radius: 3px;
   display: inline-block;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  -ms-border-radius: 3px;
-  -o-border-radius: 3px;
 }
 
 /* Estilo para aplicar a la cantidad */
 .quantityFrame {
   font-weight: bold;
-  /* Agrega otros estilos según sea necesario */
 }
+
+@media screen and (max-width: 600px) {
+  .quantity-selector {
+    width: 40px; /* O cualquier otro tamaño que prefieras */
+    height: 30px; /* Ajusta la altura según sea necesario */
+    font-size: 14px; /* Ajusta el tamaño de la fuente según sea necesario */
+    border: 1px solid #666;
+    border-radius: 3px;
+    /* Otros estilos según sea necesario */
+  }
+}
+
+
 
