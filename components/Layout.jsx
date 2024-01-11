@@ -99,12 +99,12 @@ export default function Layout({ title, children }) {
               </li>
 
               <li className="nav-item">
-                <a href="#" className="nav-link" onClick={openOffcanvas}>
+                <button className="nav-link" onClick={openOffcanvas}>
                   Cart{" "}
                   <span className="text-white bg-danger rounded p-1">
                     {cart && cart.cartItems ? cart.cartItems.length : 0}
                   </span>{" "}
-                </a>
+                </button>
               </li>
 
             </ul>
