@@ -4,6 +4,10 @@ import Layout from "../components/Layout";
 import BootstrapCarousel from "../components/Carousel";
 import Card from "../components/Card";
 import { renderProductCategory } from "../utils/ProductUtils";
+import Link from "next/link";
+import Footer from "../components/Footer";
+
+
 
 export default function Home() {
   return (
@@ -16,29 +20,31 @@ export default function Home() {
         </Head>
         <Layout title={"home page"} />
         <main>
-          <BootstrapCarousel />
+          <BootstrapCarousel/>
         </main>
       </div>
+
       <div>
+      <section id="shop">
         <h2 className="text-center mt-5 mb-5">Shop</h2>
+      </section>
         <Card />
       </div>
       <div>
-        <h2 className="text-center mt-5 mb-5">List of products</h2>
+        <h2 className="text-center mt-5 mb-5">LIST OF PRODUCTS</h2>
         <div className="container">
-          <h2 className="text-center mt-5 mb-5" id="men-section">
-            Men
-          </h2>
+          <h2 className="text-center mt-5 mb-5" id="men-section">MEN</h2>
           {renderProductCategory("Men", "Top")}
           {renderProductCategory("Men", "Bottom")}
           {renderProductCategory("Men", "Shoes")}
-          <h2 className="text-center mt-5 mb-5" id="women-section">
-            Women
-          </h2>
+          <h2 className="text-center mt-5 mb-5" id="women-section" >WOMEN</h2>
           {renderProductCategory("Women", "Top")}
           {renderProductCategory("Women", "Bottom")}
           {renderProductCategory("Women", "Shoes")}
         </div>
+      </div>
+      <div id="footer">
+      <Footer/>
       </div>
     </div>
   );
