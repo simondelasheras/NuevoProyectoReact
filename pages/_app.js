@@ -6,7 +6,7 @@ import { StoreProvider } from "../utils/Store";
 
 function MyApp({ Component, pageProps }) {
   useEffect(() => {
-    // Importa Bootstrap solo en el lado del cliente
+
     if (typeof window !== "undefined") {
       require("bootstrap/dist/css/bootstrap.min.css");
       require("bootstrap/dist/js/bootstrap.bundle.min.js");

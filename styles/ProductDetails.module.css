@@ -1,4 +1,4 @@
-/* ProductDetails.module.css */
+
 .productDetails {
   display: flex;
   align-items: center;
@@ -6,6 +6,6 @@
 }
 
 .productImage {
-  width: 100%; /* Ajusta según tus necesidades */
-  height: auto; /* Para mantener la proporción original */
+  width: 100%; 
+  height: auto; 
 }

@@ -1,22 +1,22 @@
-/* Estilos para las tarjetas */
+
 .firstCard,
 .secondCard {
-  width: 100%; /* Ajusta el tamaño de las tarjetas al 100% del ancho del contenedor */
-  max-width: 100%; /* Limita el ancho máximo de la tarjeta al 100% */
-  height: auto; /* Permite que la altura se ajuste automáticamente en función del ancho */
+  width: 100%; 
+  max-width: 100%; 
+  height: auto; 
 }
 
-/* Estilos para el título de la tarjeta */
+
 .cardTitle {
   position: absolute;
-  bottom: 5%; /* Ajusta la distancia desde la parte inferior utilizando porcentaje */
+  bottom: 5%; 
   left: 0;
   right: 0;
   text-align: center;
-  background-color: rgba(0, 0, 0, 0.3); /* Fondo más difuminado (mayor opacidad) */
-  color: #fff; /* Color del texto */
-  padding: 2%; /* Espacio alrededor del título utilizando porcentaje */
-  text-shadow: 1% 1% 2% rgba(0, 0, 0, 0.6); /* Borde al texto aún más pronunciado utilizando porcentaje */
+  background-color: rgba(0, 0, 0, 0.3); 
+  color: #fff; 
+  padding: 2%; 
+  text-shadow: 1% 1% 2% rgba(0, 0, 0, 0.6); 
 }
 
 

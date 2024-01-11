@@ -1,4 +1,4 @@
-/* OffcanvasContent.module.css */
+
 
 .shopping-cart-title {
   font-size: 1.6rem;
@@ -109,30 +109,30 @@
   background-color: #e64843 !important;
   border-color: #e64843 !important;
   transition: filter 0.3s ease, opacity 0.3s ease, background-color 0s !important;
-  text-decoration: none !important; /* Elimina el subrayado de los enlaces */
-  outline: none !important; /* Elimina el contorno en el foco */
-  width: 150px; /* Establece un ancho fijo */
-  height: 40px; /* Establece una altura fija */
+  text-decoration: none !important; 
+  outline: none !important; 
+  width: 150px; 
+  height: 40px; 
 }
 
-/* Elimina el estilo específico para el hover/focus de los botones de remove */
+
 .btn-remove-one:hover,
 .btn-remove-all:hover,
 .btn-remove-one:focus,
 .btn-remove-all:focus {
   background-color: #e64843 !important;
   outline: none !important;
-  /*Eliminaelcontornoenelfoco*/
+  
   filter: brightness(95%);
-  /* Oscurece ligeramente al hacer hover */
+  
   -webkit-filter: brightness(90%);
 }
 
-/* Estilo específico para el estado activo de los botones de remove */
+
 .btn-remove-one:active,
 .btn-remove-all:active {
-  filter: none !important; /* Elimina el filtro de luminosidad cuando se hace clic */
-  opacity: 1 !important; /* Restaura la opacidad completa cuando se hace clic */
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Agrega un efecto de sombra al hacer clic */
-  transform: scale(0.98); /* Reduce ligeramente el tamaño al hacer clic */
+  filter: none !important; 
+  opacity: 1 !important; 
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); 
+  transform: scale(0.98); 
 }

@@ -25,6 +25,7 @@ a {
 
 
 
+
 .footer {
   position: fixed;
   bottom: 0;
@@ -220,3 +221,4 @@ a {
   }.footer-everything .footer-centro .ubicacion {
       margin-left: 10px;
   }
+
