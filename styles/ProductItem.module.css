@@ -1,6 +1,4 @@
-/* ProductItem.module.css */
 
-/* Estilos para encuadrar sutilmente el subtotal */
 .subtotalFrame {
   border: 1px solid #666;
   padding: 0.2em 0.5em;
@@ -8,21 +6,16 @@
   display: inline-block;
 }
 
-/* Estilo para aplicar a la cantidad */
+
 .quantityFrame {
   font-weight: bold;
 }
 
-@media screen and (max-width: 600px) {
-  .quantity-selector {
-    width: 40px; /* O cualquier otro tamaño que prefieras */
-    height: 30px; /* Ajusta la altura según sea necesario */
-    font-size: 14px; /* Ajusta el tamaño de la fuente según sea necesario */
-    border: 1px solid #666;
-    border-radius: 3px;
-    /* Otros estilos según sea necesario */
-  }
+.outOfStock {
+  background-color: grey ; 
+  cursor: not-allowed;
 }
+
 
 
 

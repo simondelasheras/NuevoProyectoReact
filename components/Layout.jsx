@@ -1,4 +1,3 @@
-// components/Layout.jsx
 
 import React, { useContext, useEffect, useState } from "react";
 import Head from "next/head";

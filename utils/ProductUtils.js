@@ -1,4 +1,4 @@
-// ProductUtils.js
+
 import React, { useContext } from "react";
 import ProductItem from "../components/ProductItem";
 import { Store } from "../utils/Store";
@@ -19,7 +19,7 @@ export const renderProductCategory = (gender, category) => {
   const filteredProducts = filterProductsByGenderAndCategory(
     gender,
     category,
-    state.products || [] // Manejo si state.products es undefined
+    state.products || []
   );
 
   if (filteredProducts.length > 0) {

@@ -1,4 +1,4 @@
-// store.js
+
 import axios from "axios";
 import { createContext, useReducer, useEffect } from "react";
 
@@ -9,7 +9,7 @@ const initialState = {
   cart:  []
 };
 
-// Función para obtener datos y actualizar el estado
+
 const getData = async (dispatch) => {
   try {
     

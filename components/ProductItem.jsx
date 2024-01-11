@@ -1,17 +1,18 @@
-/* eslint-disable @next/next/no-img-element */
+
 import React, { useState, useContext, useEffect } from "react";
 import { Modal, Button } from "react-bootstrap";
 import axios from "axios";
 import ProductDetails from "./ProductDetails";
 import { Store } from "../utils/Store";
 import styles from "../styles/ProductItem.module.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 
-// Declara la función getData en el mismo archivo
+
 const getData = async (dispatch) => {
   try {
     const res = await axios.get("http://localhost:5000/products");
     const res2 = await axios.get("http://localhost:5001/cart");
-    // Despacha la acción para actualizar el estado
+
     dispatch({
       type: "READ_STATE",
       payload: { 
@@ -26,98 +27,115 @@ const getData = async (dispatch) => {
 
 export default function ProductItem({ product }) {
   const { state, dispatch } = useContext(Store);
-  
 
-  // Llama a la función getData dentro de useEffect
+
   useEffect(() => {
     getData(dispatch);
-  }, []); // Ejecuta solo una vez al montar el componente
+  }, []); 
 
   const [showModal, setShowModal] = useState(false);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [selectedQuantity, setSelectedQuantity] = useState(1);
 
-  const handleShow = () => setShowModal(true);
-  const handleClose = () => setShowModal(false);
+
+const initialButtonState = product.inCart === 20;
+
+const [isOutOfStock, setIsOutOfStock] = useState(initialButtonState);
+
+
+useEffect(() => {
+  const updatedButtonState = product.inCart === 20;
+  setIsOutOfStock(updatedButtonState);
+}, [product.inCart]);
+
+const handleShow = () => {
+
+  if (isOutOfStock) {
+    console.log("Out of Stock");
+    return;
+  }
+
+  setShowModal(true);
+};
+const handleClose = () => {
+  setShowModal(false);
+
+  setSelectedQuantity(1);
+};
 
   const handleQuantityChange = (e) => {
     const selectedQuantity = parseInt(e.target.value, 10);
     setSelectedQuantity(selectedQuantity);
-    // Agregar la siguiente línea para quitar el enfoque después de la selección
+
     e.target.blur();
   };
 
-
   const { cart, products } = state;
 
+  const addToCartHandler = (product) => {
+    if (!isNaN(selectedQuantity) && selectedQuantity > 0) {
 
-const addToCartHandler = (product) => {
 
-  if (!isNaN(selectedQuantity) && selectedQuantity > 0) {
-    // dispatch({
-    //   type: "CART_ADD_ITEM",
-    //   payload: { ...product, quantity: selectedQuantity },
-    // });
-    
-    setShowModal(false);
-    setShowConfirmationModal(true);
-  }
-}
-const confirmPurchaseHandler = async () => {
-  try {
-    console.log(state);
+      setShowModal(false);
+      setShowConfirmationModal(true);
+    }
+  };
+  const confirmPurchaseHandler = async () => {
+    try {
+      console.log(state);
 
-    const productInStock = products.find((p) => p.id === product.id);
-    console.log(cart);
-    const existingCartItem = cart.cartItems.find((p) => {
-      console.log("product.id:", product.id);
-      console.log("p.id:", p.id);
-      return p.id === product.id;
-    });
-    // const existingCartItem = cart.cartItems.find((p) => p.id === product.id);
-    console.log("Existing Cart Item:", existingCartItem);
-    if (productInStock && productInStock.countInStock >= selectedQuantity) {
-      if (existingCartItem) {
-        // Si el producto ya está en el carrito, actualiza la cantidad
-        // const newQuantity = existingCartItem.inCart + selectedQuantity;
-        await axios.patch(`http://localhost:5001/cart/${existingCartItem.id}`, {
-          countInStock: existingCartItem.countInStock - selectedQuantity,
-          inCart: existingCartItem.inCart + selectedQuantity,
-        });
-      } else {
-        // Si el producto no está en el carrito, agrégalo
-        await axios.post("http://localhost:5001/cart", {
-          ...product,
+      const productInStock = products.find((p) => p.id === product.id);
+      console.log(cart);
+      const existingCartItem = cart.cartItems.find((p) => {
+        console.log("product.id:", product.id);
+        console.log("p.id:", p.id);
+        return p.id === product.id;
+      });
+
+      console.log("Existing Cart Item:", existingCartItem);
+      if (productInStock && productInStock.countInStock >= selectedQuantity) {
+        if (existingCartItem) {
+
+          await axios.patch(
+            `http://localhost:5001/cart/${existingCartItem.id}`,
+            {
+              countInStock: existingCartItem.countInStock - selectedQuantity,
+              inCart: existingCartItem.inCart + selectedQuantity,
+            }
+          );
+        } else {
+
+          await axios.post("http://localhost:5001/cart", {
+            ...product,
+            countInStock: productInStock.countInStock - selectedQuantity,
+            inCart: productInStock.inCart + selectedQuantity,
+          });
+        }
+
+
+        await axios.patch(`http://localhost:5000/products/${product.id}`, {
           countInStock: productInStock.countInStock - selectedQuantity,
           inCart: productInStock.inCart + selectedQuantity,
         });
+
+
+        getData(dispatch);
+      } else {
+        console.log("Producto no disponible");
       }
-
-      // Realiza una solicitud PATCH para actualizar el stock del producto
-      await axios.patch(`http://localhost:5000/products/${product.id}`, {
-        countInStock: productInStock.countInStock - selectedQuantity,
-        inCart: productInStock.inCart + selectedQuantity,
-      });
-
-      // Llama a la función para obtener los datos actualizados
-      getData(dispatch);
-    } else {
-      console.log("Producto no disponible");
+      console.log("Cart después de la operación:", cart);
+    } catch (error) {
+      console.error("Error adding to cart:", error);
     }
-    console.log("Cart después de la operación:", cart);
 
-  } catch (error) {
-    console.error("Error adding to cart:", error);
-  }
-
-  setShowModal(false);
-  setShowConfirmationModal(false);
-  setSelectedQuantity(1);
-};
-
+    setShowModal(false);
+    setShowConfirmationModal(false);
+    setSelectedQuantity(1);
+  };
 
   const cancelPurchaseHandler = () => {
     setShowConfirmationModal(false);
+    
   };
 
   return (
@@ -129,8 +147,12 @@ const confirmPurchaseHandler = async () => {
           <p className="card-text">{product.patent}</p>
           <p className="card-text">{product.type}</p>
           <p className="card-text">${product.price}</p>
-          <button className="btn btn-primary" onClick={handleShow}>
-            View product
+          <button
+            className={`btn ${isOutOfStock ? "btn-secondary" : "btn-primary"}`}
+            onClick={handleShow}
+            disabled={isOutOfStock}
+          >
+            {isOutOfStock ? "Out of Stock" : "View Product"}
           </button>
 
           {/* Modal */}
@@ -147,7 +169,7 @@ const confirmPurchaseHandler = async () => {
                   <strong>Quantity:</strong>&nbsp;
                 </label>
                 <select
-                  className={styles["quantity-selector"]}
+                  className={`quantity-selector ${styles.quantitySelector}`}
                   id="quantity"
                   value={selectedQuantity}
                   onChange={handleQuantityChange}

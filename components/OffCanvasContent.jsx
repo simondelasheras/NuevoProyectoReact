@@ -1,4 +1,4 @@
-// OffcanvasContent.js
+
 import { useContext, useEffect } from "react";
 import { Store } from "../utils/Store";
 import styles from "../styles/OffCanvasContent.module.css";
@@ -8,7 +8,7 @@ const getData = async (dispatch) => {
   try {
     const res = await axios.get("http://localhost:5000/products");
     const res2 = await axios.get("http://localhost:5001/cart");
-    // Despacha la acción para actualizar el estado
+    
     dispatch({
       type: "READ_STATE",
       payload: {
@@ -27,16 +27,16 @@ const OffcanvasContent = ({ offcanvasInstance }) => {
 
   const removeFromCartHandler = async (id) => {
     try {
-      // Realiza una solicitud DELETE para eliminar el producto del carrito
+      
       await axios.delete(`http://localhost:5001/cart/${id}`);
 
-      // Despacha una acción para actualizar el estado del carrito
+      
       dispatch({ type: "CART_REMOVE_ITEM", payload: { id } });
 
-      // Obtén el producto correspondiente al id
+      
       const product = state.products.find((p) => p.id === id);
 
-      // Incrementa el stock en la base de datos
+      
       await axios.patch(`http://localhost:5000/products/${id}`, {
         countInStock: product.countInStock + product.inCart,
         inCart: 0
@@ -64,7 +64,7 @@ const removeOneFromCartHandler = async (id) => {
         inCart: product.inCart - 1,
       });
 
-      // Llama a la función para obtener los datos actualizados
+      
       getData(dispatch);
     } else {
       await axios.delete(`http://localhost:5001/cart/${id}`);
@@ -74,7 +74,7 @@ const removeOneFromCartHandler = async (id) => {
         inCart: 0,
       });
 
-      // Llama a la función para obtener los datos actualizados
+      
       getData(dispatch);
     }
   } catch (error) {
@@ -85,10 +85,10 @@ const removeOneFromCartHandler = async (id) => {
 
 const clearCartHandler = async () => {
   try {
-    // Obtener los IDs de todos los elementos en el carrito
+    
     const cartItemIds = state.cart.cartItems.map((item) => item.id);
 
-    // Eliminar elementos del carrito
+    
     for (const id of cartItemIds) {
       try {
         await axios.delete(`http://localhost:5001/cart/${id}`);
@@ -97,10 +97,10 @@ const clearCartHandler = async () => {
       }
     }
 
-    // Despachar una acción para limpiar el estado del carrito
+    
     dispatch({ type: "CART_CLEAR" });
 
-    // Actualizar el stock en la base de datos
+    
     for (const item of state.cart.cartItems) {
       try {
         const product = state.products.find((p) => p.id === item.id);
@@ -116,10 +116,10 @@ const clearCartHandler = async () => {
       }
     }
 
-    // Esperar un momento antes de obtener datos nuevamente
+   
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    // Actualizar el estado con los productos del carrito actualizado
+    
     getData(dispatch);
   } catch (error) {
     console.error("Error removing from cart:", error);
