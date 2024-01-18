@@ -58,7 +58,7 @@ export default function Layout({ title, children }) {
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div className="container">
           <Link href="/">
-            <img src="https://i.imgur.com/1cIziLP.png" alt="Power-Sport-Logo" className={styles.navbarImg} />
+            <img src="https://imgur.com/Mnxc6dl.png" alt="Power-Sport-Logo" className={styles.navbarImg} />
           </Link>
           <button
             className="navbar-toggler"
