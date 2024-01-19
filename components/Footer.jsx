@@ -10,13 +10,13 @@ function Footer () {
 
             <div className="footer-centro">
                 <div>
-                    <img className="image1-footer-centro" src='https://i.imgur.com/4tLOCM7.jpg' height={30} width={30}/>
+                    <img className="image1-footer-centro" src='/images/ubicacion.jpg' height={30} width={30}/>
                     <i className='ubicacion'></i>
                     <p className="p-1-footer">Buenos Aires</p>
                 </div>
 
                 <div>
-                    <img className="image2-footer-centro" src='https://i.imgur.com/ixGA6dB.jpg' height={30} width={30}/>
+                    <img className="image2-footer-centro" src='/images/Telefono.jpg' height={30} width={30}/>
                     <i className='ubicacion'></i>
                     <p className="p-2-footer">+54 911 4412-8340</p>
                 </div>
@@ -38,7 +38,7 @@ function Footer () {
                         <a href="https://www.instagram.com/powersportindumentaria/?hl=es"><img className='instagram' src='https://imgur.com/45X5j6H.jpg' height={43} width={44}/></a>
                         <a href="https://www.facebook.com/powersports67/?locale=es_LA"><img className='facebook' src='https://imgur.com/pUbffmV.jpg' height={41} width={42}/></a>
                         <a href="https://twitter.com/Power987Sport"><img className='twitter' src='https://imgur.com/aiIbqOm.jpg' height={42} width={43}/></a>
-                        <a href="https://www.youtube.com/watch?v=UvUmcyWNp9I"><img className='youtube'src='https://i.imgur.com/J0crEuU.png' height={52} width={60}/></a>
+                        <a href="https://www.youtube.com/watch?v=UvUmcyWNp9I"><img className='youtube'src='/images/youtube.png' height={44} width={55}/></a>
                     </div>
                 </div>
 
