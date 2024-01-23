@@ -30,7 +30,7 @@ export default function Home() {
       </section>
         <Card />
       </div>
-      <div>
+      <div className="container2">
         <h2 className="text-center mt-5 mb-5">LIST OF PRODUCTS</h2>
         <div className="container">
           <h2 className="text-center mt-5 mb-5" id="men-section">MEN</h2>
