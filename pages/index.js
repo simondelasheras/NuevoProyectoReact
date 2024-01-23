@@ -6,6 +6,7 @@ import Card from "../components/Card";
 import { renderProductCategory } from "../utils/ProductUtils";
 import Link from "next/link";
 import Footer from "../components/Footer";
+import styles from "../styles/Index.module.css";
 
 
 
@@ -20,31 +21,43 @@ export default function Home() {
         </Head>
         <Layout title={"home page"} />
         <main>
-          <BootstrapCarousel/>
+          <BootstrapCarousel />
         </main>
       </div>
 
       <div>
-      <section id="shop">
-        <h2 className="text-center mt-5 mb-5">Shop</h2>
-      </section>
+        <section id="shop">
+          <h2 className={`text-center mt-5 mb-5 ${styles.indexTitle}`}>SHOP</h2>
+        </section>
         <Card />
       </div>
       <div className="container2">
-        <h2 className="text-center mt-5 mb-5">LIST OF PRODUCTS</h2>
+        <h2 className={`text-center mt-5 mb-5 ${styles.indexTitle}`}>
+          LIST OF PRODUCTS
+        </h2>
         <div className="container">
-          <h2 className="text-center mt-5 mb-5" id="men-section">MEN</h2>
+          <h2
+            className={`text-center mt-5 mb-5 ${styles.indexTitle}`}
+            id="men-section"
+          >
+            MEN
+          </h2>
           {renderProductCategory("Men", "Top")}
           {renderProductCategory("Men", "Bottom")}
           {renderProductCategory("Men", "Shoes")}
-          <h2 className="text-center mt-5 mb-5" id="women-section" >WOMEN</h2>
+          <h2
+            className={`text-center mt-5 mb-5 ${styles.indexTitle}`}
+            id="women-section"
+          >
+            WOMEN
+          </h2>
           {renderProductCategory("Women", "Top")}
           {renderProductCategory("Women", "Bottom")}
           {renderProductCategory("Women", "Shoes")}
         </div>
       </div>
       <div id="footer">
-      <Footer/>
+        <Footer />
       </div>
     </div>
   );
