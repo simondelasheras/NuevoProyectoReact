@@ -145,7 +145,7 @@ const clearCartHandler = async () => {
         </h5>
         <button
           type="button"
-          className="btn-close"
+          className={`btn-close ${styles["custom-close"]}`}
           data-bs-dismiss="offcanvas"
           aria-label="Close"
         ></button>
@@ -195,7 +195,7 @@ const clearCartHandler = async () => {
             ))}
           </ul>
         ) : (
-          <div>Cart is empty.</div>
+          <div className={styles.cartEmptyMessage}>Cart is empty.</div>
         )}
         {cart && cart.cartItems && cart.cartItems.length > 0 && (
           <div className={styles["cart-total"]}>
