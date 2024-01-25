@@ -1,100 +1,86 @@
+import React from "react";
+import styles from "../styles/Footer.module.css";
+
+const informacionContacto = [
+  { imgSrc: "/images/ubicacion.jpg", texto: "Buenos Aires" },
+  { imgSrc: "/images/Telefono.jpg", texto: "+54 911 4412-8340" },
+  {
+    imgSrc: "https://imgur.com/WVgU2bW.jpg",
+    texto: "powersport@gmail.com",
+    enlace: "mailto:powersport@gmail.com",
+  },
+];
+
+const enlacesRedesSociales = [
+  {
+    imgSrc: "https://imgur.com/45X5j6H.jpg",
+    alt: "Instagram",
+    enlace: "https://www.instagram.com/powersportindumentaria/?hl=es",
+  },
+  {
+    imgSrc: "https://imgur.com/pUbffmV.jpg",
+    alt: "Facebook",
+    enlace: "https://www.facebook.com/powersports67/?locale=es_LA",
+  },
+  {
+    imgSrc: "https://imgur.com/aiIbqOm.jpg",
+    alt: "Twitter",
+    enlace: "https://twitter.com/Power987Sport",
+  },
+  {
+    imgSrc: "/images/youtube.png",
+    alt: "YouTube",
+    enlace: "https://www.youtube.com/@powersports8207",
+  },
+];
+
 function Footer() {
   return (
-    <footer
-      className="footer-everything"
-      style={{ display: "flex", justifyContent: "space-between" }}
-    >
-      <div className="footer-parte-izquierda">
-        <h3 className="h3-footer-everything">
-          Power <span className="span-footer-everything">Sport</span>
-        </h3>
-        <p className="footer-company-name">
-          CopyRight@2023 <strong>Empower yourself. </strong>All rights reserved
-        </p>
-      </div>
-
-      <div className="footer-centro">
-        <div>
-          <img
-            className="image1-footer-centro"
-            src="/images/ubicacion.jpg"
-            height={30}
-            width={30}
-          />
-          <i className="ubicacion"></i>
-          <p className="p-1-footer">Buenos Aires</p>
-        </div>
-        <div>
-          <img
-            className="image2-footer-centro"
-            src="/images/Telefono.jpg"
-            height={30}
-            width={30}
-          />
-          <i className="ubicacion"></i>
-          <p className="p-2-footer">+54 911 4412-8340</p>
-        </div>
-        <div>
-          <img
-            className="image3-footer-centro"
-            src="https://imgur.com/WVgU2bW.jpg"
-            height={30}
-            width={30}
-          />
-          <i className="ubicacion"></i>
-          <p className="p-3-footer">
-            <a className="a-1-footer-centro">powersport@gmail.com</a>
+    <footer className={styles.footer}>
+      <div className={styles.footerContent}>
+        <div className={styles.brand}>
+          <h3>
+            Power <span>Sport</span>
+          </h3>
+          <p>
+            CopyRight@2023 <strong>Empower yourself. </strong>All rights
+            reserved.
           </p>
         </div>
-      </div>
 
-      <div className="footer-parte-derecha">
-        <p className="footer-company-about">
-          <span className="span-footer-company-about">About Us</span>
-          <strong>Unleash Your Potential. </strong>Power Sport presents a
-          company with the best training courses and best prices. In our
-          official store you can find a wide variety of clothing and different
-          footwear, and we also have several gyms.
-        </p>
-        <div className="footer-iconos">
-          <a
-            href="https://www.instagram.com/powersportindumentaria/?hl=es"
-            target="_blank"
-          >
-            <img
-              className="instagram"
-              src="https://imgur.com/45X5j6H.jpg"
-              height={43}
-              width={44}
-            />
-          </a>
-          <a
-            href="https://www.facebook.com/powersports67/?locale=es_LA"
-            target="_blank"
-          >
-            <img
-              className="facebook"
-              src="https://imgur.com/pUbffmV.jpg"
-              height={41}
-              width={42}
-            />
-          </a>
-          <a href="https://twitter.com/Power987Sport" target="_blank">
-            <img
-              className="twitter"
-              src="https://imgur.com/aiIbqOm.jpg"
-              height={42}
-              width={43}
-            />
-          </a>
-          <a href="https://www.youtube.com/@powersports8207" target="_blank">
-            <img
-              className="youtube"
-              src="/images/youtube.png"
-              height={44}
-              width={55}
-            />
-          </a>
+        <div className={styles.contactInfo}>
+          {informacionContacto.map((info, index) => (
+            <div key={index}>
+              <img src={info.imgSrc} alt={info.texto} />
+              {info.enlace ? (
+                <p>
+                  <a href={info.enlace}>{info.texto}</a>
+                </p>
+              ) : (
+                <p>{info.texto}</p>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <div className={styles.aboutUs}>
+          <h3>
+            About <span>Us</span>
+          </h3>
+          <p>
+            <strong>Unleash Your Potential </strong>
+            Power Sport introduces a brand committed to delivering top-quality
+            athletic gear at the best prices. Explore our official store to
+            discover a diverse range of high-performance sportswear and footwear
+            for all your training needs.
+          </p>
+          <div className={styles.socialLinks}>
+            {enlacesRedesSociales.map((enlace, index) => (
+              <a key={index} href={enlace.enlace} target="_blank">
+                <img src={enlace.imgSrc} alt={enlace.alt} />
+              </a>
+            ))}
+          </div>
         </div>
       </div>
     </footer>
