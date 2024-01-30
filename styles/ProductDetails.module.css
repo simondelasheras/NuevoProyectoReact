@@ -1,11 +1,19 @@
 
-.productDetails {
-  display: flex;
-  align-items: center;
-  height: 100%;
+
+
+.product-details-container {
+  background-color: #212529;
+  color: white;
+  border: 1px solid #ccc;
 }
 
-.productImage {
-  width: 100%; 
-  height: auto; 
+.product-image {
+  padding: 15px;
+
+}
+
+.custom-section {
+  background-color: #212529;
+  color: white;
+  /* Ajusta otros estilos según tus necesidades */
 }
