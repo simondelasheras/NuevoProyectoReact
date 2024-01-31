@@ -4,6 +4,8 @@
   padding: 0.2em 0.5em;
   border-radius: 3px;
   display: inline-block;
+  background-color: white ;
+  color: black;
 }
 
 
@@ -39,17 +41,44 @@
   max-width: 100%;
   height: 50%;
   padding: 15px;
-  border-radius: 10px;
-  -webkit-border-radius: 25px;
-  -moz-border-radius: 10px;
-  -ms-border-radius: 10px;
-  -o-border-radius: 10px;
+  border-radius: 20px;
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  -ms-border-radius: 20px;
+  -o-border-radius: 20px;
 }
 
 .card p,
 .card h5
 {
   padding: 1px; 
+}
+
+.customSection {
+  background-color: #212529;
+  color: white;
+  border-bottom: 2px solid white;
+}
+
+.custom-background {
+  background-color: #e64843 !important;
+  border-color: #e64843 !important;
+}
+
+.custom-background:hover,
+.custom-background:focus {
+  background-color: #e64843;
+  outline: none;
+  filter: brightness(95%);
+  -webkit-filter: brightness(90%);
+}
+
+.custom-background:active {
+    filter: none;
+    opacity: 1;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    transform: scale(0.98);
+    -webkit-filter: none;
 }
 
 

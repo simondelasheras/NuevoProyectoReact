@@ -1,3 +1,32 @@
 {
-  "cart": []
+  "cart": [
+    {
+      "name": "Jersey Boca Jrs",
+      "type": "Football",
+      "price": "60",
+      "patent": "Adidas",
+      "category": "Top",
+      "gender": "Men",
+      "slug": "Jersey Boca Jrs",
+      "image": "/images/remeram1.jpg",
+      "countInStock": 19,
+      "description": "",
+      "id": 1,
+      "inCart": 1
+    },
+    {
+      "name": "Jersey River Plate",
+      "type": "Football",
+      "price": "60",
+      "patent": "Adidas",
+      "category": "Top",
+      "gender": "Men",
+      "slug": "Jersey River Plate",
+      "image": "/images/remeram2.jpg",
+      "countInStock": 19,
+      "description": "",
+      "id": 2,
+      "inCart": 1
+    }
+  ]
 }

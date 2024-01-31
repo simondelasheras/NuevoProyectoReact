@@ -4,16 +4,26 @@
 .product-details-container {
   background-color: #212529;
   color: white;
-  border: 1px solid #ccc;
+  border: 2px solid #ccc;
 }
 
 .product-image {
   padding: 15px;
-
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
 }
 
 .custom-section {
   background-color: #212529;
   color: white;
-  /* Ajusta otros estilos según tus necesidades */
+  
+}
+
+.custom-plus-section{
+  background-color: #212529;
+  color: white;
+  
 }

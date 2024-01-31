@@ -157,16 +157,17 @@ const handleClose = () => {
 
           {/* Modal */}
           <Modal show={showModal} onHide={handleClose} centered>
-            <Modal.Header closeButton>
+            <Modal.Header className={styles.customSection} closeButton>
               <Modal.Title>{product.name}</Modal.Title>
             </Modal.Header>
-            <Modal.Body>
+            <Modal.Body className={styles.customSection}>
               <ProductDetails product={product} />
 
               {/* Selección de cantidad */}
               <div className="mb-3">
                 <label htmlFor="quantity">
-                  <strong>Quantity:</strong>&nbsp;
+                  <strong>Quantity:</strong>
+                  &nbsp;
                 </label>
                 <select
                   className={`quantity-selector ${styles.quantitySelector}`}
@@ -190,7 +191,7 @@ const handleClose = () => {
                 </span>
               </div>
             </Modal.Body>
-            <Modal.Footer>
+            <Modal.Footer className={styles.customSection}>
               {/* Invierte el orden de los botones */}
               <Button
                 variant="primary"
@@ -198,7 +199,11 @@ const handleClose = () => {
               >
                 Add to Cart
               </Button>
-              <Button variant="secondary" onClick={handleClose}>
+              <Button
+                variant="secondary"
+                onClick={handleClose}
+                className={styles["custom-background"]}
+              >
                 Close
               </Button>
             </Modal.Footer>
@@ -206,10 +211,10 @@ const handleClose = () => {
 
           {/* Modal de confirmación de compra */}
           <Modal show={showConfirmationModal} centered>
-            <Modal.Header>
+            <Modal.Header className={styles.customSection}>
               <Modal.Title>Confirm Purchase</Modal.Title>
             </Modal.Header>
-            <Modal.Body>
+            <Modal.Body className={styles.customSection}>
               <p>
                 {`Do you want to confirm the purchase of: `}
                 <strong className={styles.quantityFrame}>
@@ -224,12 +229,16 @@ const handleClose = () => {
                 </span>
               </p>
             </Modal.Body>
-            <Modal.Footer>
+            <Modal.Footer className={styles.customSection}>
               {/* Invierte el orden de los botones */}
               <Button variant="primary" onClick={confirmPurchaseHandler}>
                 Yes
               </Button>
-              <Button variant="secondary" onClick={cancelPurchaseHandler}>
+              <Button
+                variant="secondary"
+                onClick={cancelPurchaseHandler}
+                className={styles["custom-background"]}
+              >
                 No
               </Button>
             </Modal.Footer>

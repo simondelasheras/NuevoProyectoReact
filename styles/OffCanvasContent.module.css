@@ -23,7 +23,7 @@
   position: sticky;
   top: 0;
   z-index: 1;
-  border-bottom: 3px solid white;
+  border-bottom: 2px solid white;
 }
 
 .custom-close {
@@ -41,6 +41,7 @@
   flex-grow: 1;
   overflow-y: auto;
   color: white;
+  
 }
 
 .cart-content-title {
@@ -58,6 +59,7 @@
   color: white;
   background-color: #212529;
   
+  
 }
 
 .cart-item {
@@ -68,6 +70,7 @@
   justify-content: space-between;
   align-items: center;
   border-radius: 5px;
+  border: 2px solid #ccc;
 }
 
 .cart-item-image-container {
@@ -135,10 +138,14 @@
   background-color: #e64843 !important;
   border-color: #e64843 !important;
   transition: filter 0.3s ease, opacity 0.3s ease, background-color 0s !important;
-  text-decoration: none !important; 
-  outline: none !important; 
-  width: 150px; 
-  height: 40px; 
+  text-decoration: none !important;
+  outline: none !important;
+  width: 150px;
+  height: 40px;
+  -webkit-transition: filter 0.3s ease, opacity 0.3s ease, background-color 0s !important;
+  -moz-transition: filter 0.3s ease, opacity 0.3s ease, background-color 0s !important;
+  -ms-transition: filter 0.3s ease, opacity 0.3s ease, background-color 0s !important;
+  -o-transition: filter 0.3s ease, opacity 0.3s ease, background-color 0s !important;
 }
 
 
