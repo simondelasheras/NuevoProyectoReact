@@ -157,7 +157,12 @@ const handleClose = () => {
 
           {/* Modal */}
           <Modal show={showModal} onHide={handleClose} centered>
-            <Modal.Header className={styles.customSection} closeButton>
+            <Modal.Header className={styles.customSection} >
+              <button
+                type="button"
+                className={styles.newButton}
+                onClick={handleClose}
+              ></button>
               <Modal.Title>{product.name}</Modal.Title>
             </Modal.Header>
             <Modal.Body className={styles.customSection}>
@@ -191,7 +196,7 @@ const handleClose = () => {
                 </span>
               </div>
             </Modal.Body>
-            <Modal.Footer className={styles.customSection}>
+            <Modal.Footer className={styles.customPlusSection}>
               {/* Invierte el orden de los botones */}
               <Button
                 variant="primary"
@@ -229,7 +234,7 @@ const handleClose = () => {
                 </span>
               </p>
             </Modal.Body>
-            <Modal.Footer className={styles.customSection}>
+            <Modal.Footer className={styles.customPlusSection}>
               {/* Invierte el orden de los botones */}
               <Button variant="primary" onClick={confirmPurchaseHandler}>
                 Yes

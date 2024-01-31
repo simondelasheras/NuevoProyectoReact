@@ -19,7 +19,6 @@ export default function ProductDetails({ product }) {
         </div>
         <div className="col-md-8">
           <div className="card-body">
-            <h5 className="card-title">{product.name}</h5>
             <p className="card-title">Price: {product.price}$</p>
             <p className="card-title">Patent: {product.patent}</p>
             <p className="card-title">Type: {product.type}</p>

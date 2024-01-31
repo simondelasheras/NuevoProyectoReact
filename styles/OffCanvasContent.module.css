@@ -26,9 +26,7 @@
   border-bottom: 2px solid white;
 }
 
-.custom-close {
-  color: white; /* Establece el color blanco para la "X" */
-}
+
 
 .cartEmptyMessage {
   color: white;
@@ -168,4 +166,43 @@
   opacity: 1 !important; 
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); 
   transform: scale(0.98); 
+}
+
+.newButton {
+  position: relative;
+  width: 25px;
+  height: 25px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s; /* Agrega una transición de color de fondo */
+}
+
+.newButton:before,
+.newButton:after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 80%;
+  height: 3px; /* Ajusta el grosor de la línea */
+  background-color: white;
+  transition: background-color 0.3s, transform 0.3s; /* Agrega transiciones */
+}
+
+.newButton:hover:before,
+.newButton:hover:after {
+  background-color: rgb(221, 214, 214); /* Cambia el color de fondo de la X al pasar el cursor */
+}
+
+.newButton:before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.newButton:after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.newButton:active {
+  transform: scale(0.9); /* Efecto de escala al hacer clic */
 }

@@ -145,9 +145,9 @@ const clearCartHandler = async () => {
         </h5>
         <button
           type="button"
-          className={`btn-close ${styles["custom-close"]}`}
           data-bs-dismiss="offcanvas"
           aria-label="Close"
+          className={styles.newButton}
         ></button>
       </div>
       <div className={`offcanvas-body ${styles["cart-content"]}`}>
