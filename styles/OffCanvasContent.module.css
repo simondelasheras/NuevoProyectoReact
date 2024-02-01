@@ -175,7 +175,7 @@
   background-color: transparent;
   border: none;
   cursor: pointer;
-  transition: background-color 0.3s; /* Agrega una transición de color de fondo */
+  transition: background-color 0.3s; 
 }
 
 .newButton:before,
@@ -185,14 +185,14 @@
   top: 50%;
   left: 50%;
   width: 80%;
-  height: 3px; /* Ajusta el grosor de la línea */
+  height: 3px; 
   background-color: white;
-  transition: background-color 0.3s, transform 0.3s; /* Agrega transiciones */
+  transition: background-color 0.3s, transform 0.3s; 
 }
 
 .newButton:hover:before,
 .newButton:hover:after {
-  background-color: rgb(221, 214, 214); /* Cambia el color de fondo de la X al pasar el cursor */
+  background-color: rgb(221, 214, 214); 
 }
 
 .newButton:before {
@@ -204,5 +204,5 @@
 }
 
 .newButton:active {
-  transform: scale(0.9); /* Efecto de escala al hacer clic */
+  transform: scale(0.9); 
 }

@@ -141,9 +141,11 @@ const handleClose = () => {
   return (
     <div className="col">
       <div className={`card ${styles.card}`}>
+        <h5 className={`card-title ${styles["custom-card-title"]}`}>
+          {product.name}
+        </h5>
         <img src={product.image} alt="" className="imagen-card" />
         <div className="card-body">
-          <h5 className="card-title">{product.name}</h5>
           <p className="card-text">{product.patent}</p>
           <p className="card-text">{product.type}</p>
           <p className="card-text">${product.price}</p>
@@ -157,7 +159,7 @@ const handleClose = () => {
 
           {/* Modal */}
           <Modal show={showModal} onHide={handleClose} centered>
-            <Modal.Header className={styles.customSection} >
+            <Modal.Header className={styles.customSection}>
               <button
                 type="button"
                 className={styles.newButton}

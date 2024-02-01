@@ -9,10 +9,10 @@
       "gender": "Men",
       "slug": "Jersey Boca Jrs",
       "image": "/images/remeram1.jpg",
-      "countInStock": 19,
+      "countInStock": 20,
       "description": "",
       "id": 1,
-      "inCart": 1
+      "inCart": 0
     },
     {
       "name": "Jersey River Plate",
@@ -23,10 +23,10 @@
       "gender": "Men",
       "slug": "Jersey River Plate",
       "image": "/images/remeram2.jpg",
-      "countInStock": 19,
+      "countInStock": 20,
       "description": "",
       "id": 2,
-      "inCart": 1
+      "inCart": 0
     },
     {
       "name": "Hoodie Argentina",

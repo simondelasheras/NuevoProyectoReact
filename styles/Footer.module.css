@@ -1,10 +1,10 @@
-/* Footer.module.css */
+
 
 .footer {
   background-color: #212529;
   color: #fff;
-  padding: 30px; /* Ajusta el tamaño del padding para hacer el footer más grande */
-  text-align: center; /* Centra el contenido en dispositivos pequeños */
+  padding: 30px; 
+  text-align: center; 
 }
 
 .footerContent {
@@ -16,13 +16,13 @@
 
 .brand {
   flex: 1 1 auto;
-  text-align: left; /* Alinea el texto a la izquierda */
+  text-align: left; 
   margin-top: 20px;
 }
 
 .brand h3 {
   font-size: 1.8rem;
-  margin-bottom: 15px; /* Añade un espacio entre el título y el texto de copyright */
+  margin-bottom: 15px; 
   font-weight: bold;
 }
 
@@ -39,15 +39,15 @@
 .contactInfo {
   flex: 1 1 auto;
   display: flex;
-  flex-direction: column; /* Apila los elementos en dispositivos pequeños */
-  text-align: left; /* Alinea el contenido a la izquierda */
+  flex-direction: column; 
+  text-align: left; 
 }
 
 .contactInfo div {
   margin-top: 20px;
-  margin-bottom: 25px; /* Aumenta el espacio entre los elementos */
+  margin-bottom: 25px; 
   display: flex;
-  align-items: center; /* Alinea verticalmente los elementos en el contenedor flex */
+  align-items: center; 
 }
 
 .contactInfo img {
@@ -66,15 +66,15 @@
 }
 
 .contactInfo a {
-  color: #ff8c00; /* Cambia el color específicamente para los enlaces (dirección de correo) */
+  color: #ff8c00; 
 }
 
 
 .aboutUs {
   flex: 1 1 auto;
-  text-align: right; /* Alinea el contenido a la derecha */
-  max-width: 300px; /* Ajusta el ancho máximo según tus preferencias */
-  margin-right: 10px; /* Ajusta el margen derecho según tus preferencias */
+  text-align: right; 
+  max-width: 300px; 
+  margin-right: 10px; 
 }
 
 .aboutUs span {
@@ -83,22 +83,22 @@
 
 .aboutUs h3 {
   font-size: 1.8rem;
-  margin-bottom: 10px; /* Reducido el espacio debajo del título */
-  text-align: center; /* Centra el título */
+  margin-bottom: 10px; 
+  text-align: center; 
   font-weight: bold;
   
 }
 
 .aboutUs p {
-  line-height: 1.4; /* Reducido el espacio entre líneas del texto */
+  line-height: 1.4; 
   margin-bottom: 5px;
-  text-align: justify; /* Reducido el espacio debajo del texto */
+  text-align: justify; 
   font-weight: 500;
 }
 
 .aboutUs p strong {
-  display: block; /* Hace que el elemento strong sea un bloque para iniciar en una nueva línea */
-  text-align: center; /* Ajusta el margen superior según sea necesario */
+  display: block; 
+  text-align: center; 
   margin-top: 10px;
   margin-bottom: 5px;
   font-family: Verdana;
@@ -108,7 +108,7 @@
 
 .socialLinks {
   display: flex;
-  justify-content: center; /* Alinea los elementos a la derecha */
+  justify-content: center; 
   margin-top: 20px;
 }
 
@@ -126,16 +126,20 @@
 }
 
 .socialLinks a[href*="youtube.com"] img {
-  height: 41px; /* Ajusta la altura según sea necesario */
+  height: 41px; 
   width: 50px;
 }
 
-/* Media Query para pantallas pequeñas (mobile) */
-/* Estilos específicos para dispositivos móviles */
+
 @media only screen and (max-width: 768px) {
+ 
+  .footer{
+    margin-top: 30px;
+  }
+ 
   .footerContent {
     flex-direction: column;
-    align-items: center; /* Centra los elementos horizontalmente en dispositivos móviles */
+    align-items: center; 
   }
 
   .brand,
@@ -144,7 +148,7 @@
   .socialLinks {
     flex: 1 1 100%;
     margin-bottom: 25px;
-    text-align: center; /* Centra el contenido dentro de cada sección en dispositivos móviles */
+    text-align: center; 
   }
 
   .contactInfo div,
@@ -153,14 +157,13 @@
   }
 
   .contactInfo img {
-    max-width: 40px; /* Ajusta el tamaño máximo de los iconos en dispositivos móviles */
+    max-width: 40px; 
   }
 
   .socialLinks img {
-    max-width: 40px; /* Ajusta el tamaño máximo de los iconos de redes sociales en dispositivos móviles */
+    max-width: 40px; 
   }
 
-  
 }
 
 
