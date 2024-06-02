@@ -13,14 +13,15 @@ const initialState = {
 const getData = async (dispatch) => {
   try {
     
-    const resProducts = await axios("http://localhost:5000/products");
+    const resProducts = await axios("http://localhost:5050/api/products");
     
-
+   
     
-    const resCart = await axios("http://localhost:5001/cart");
+    const resCart = await axios("http://localhost:8080/api/carts");
     
 
     const newProducts = resProducts.data;
+   
     const newCartItem = resCart.data;
 
     const cartItems = (newCartItem) || [];
@@ -97,7 +98,7 @@ function reducer(state, action) {
 
     case "CART_REMOVE_ITEM": {
       const cartItems = state.cart.cartItems.filter(
-        (item) => item.id !== action.payload.id
+        (item) => item._id !== action.payload._id
       );
 
       return { ...state, cart: { ...state.cart, cartItems } };
@@ -107,7 +108,7 @@ function reducer(state, action) {
 
       const cartItems = state.cart.cartItems
         .map((item) =>
-          item.id === action.payload.id
+          item._id === action.payload._id
             ? { ...item, inCart: item.inCart - 1 }
             : item
         )

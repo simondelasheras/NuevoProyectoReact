@@ -6,8 +6,8 @@ import axios from "axios";
 
 const getData = async (dispatch) => {
   try {
-    const res = await axios.get("http://localhost:5000/products");
-    const res2 = await axios.get("http://localhost:5001/cart");
+    const res = await axios.get("http://localhost:5050/api/products");
+    const res2 = await axios.get("http://localhost:8080/api/carts");
     
     dispatch({
       type: "READ_STATE",
@@ -25,21 +25,28 @@ const OffcanvasContent = ({ offcanvasInstance }) => {
   const { state, dispatch } = useContext(Store);
   const { cart, products } = state;
 
-  const removeFromCartHandler = async (id) => {
+
+  const removeFromCartHandler = async (_id) => {
     try {
-      
-      await axios.delete(`http://localhost:5001/cart/${id}`);
+      console.log(`Removing item with id: ${_id}`);
+      await axios.delete(`http://localhost:8080/api/carts/${_id}`);
 
       
-      dispatch({ type: "CART_REMOVE_ITEM", payload: { id } });
+      dispatch({ type: "CART_REMOVE_ITEM", payload: { _id } });
 
       
-      const product = state.products.find((p) => p.id === id);
+      const product = state.products.find((p) => p._id === _id);
 
+      if (!product) {
+        console.error(`Product with id ${_id} not found`);
+        return;
+      }
       
-      await axios.patch(`http://localhost:5000/products/${id}`, {
+      console.log("Product details:", product);
+
+      await axios.patch(`http://localhost:5050/api/products/${_id}`, {
         countInStock: product.countInStock + product.inCart,
-        inCart: 0
+        inCart: 0,
       });
       getData(dispatch);
     } catch (error) {
@@ -47,19 +54,28 @@ const OffcanvasContent = ({ offcanvasInstance }) => {
     }
   };
 
-const removeOneFromCartHandler = async (id) => {
+const removeOneFromCartHandler = async (_id) => {
   try {
-    const product = state.products.find((p) => p.id === id);
+    const product = state.products.find((p) => p._id === _id);
+
+     if (!product) {
+       console.error(`Product with id ${_id} not found`);
+       return;
+     }
+
+        console.log("Removing one item with id:", _id);
+        console.log("Product details:", product);
+
 
     if (product.inCart > 1) {
-      await axios.patch(`http://localhost:5001/cart/${id}`, {
+      await axios.patch(`http://localhost:8080/api/carts/${_id}`, {
         countInStock: product.countInStock + 1,
         inCart: product.inCart - 1,
       });
 
-      dispatch({ type: "CART_REMOVE_ONE_ITEM", payload: { id } });
+      dispatch({ type: "CART_REMOVE_ONE_ITEM", payload: { _id } });
 
-      await axios.patch(`http://localhost:5000/products/${id}`, {
+      await axios.patch(`http://localhost:5050/api/products/${_id}`, {
         countInStock: product.countInStock + 1,
         inCart: product.inCart - 1,
       });
@@ -67,9 +83,9 @@ const removeOneFromCartHandler = async (id) => {
       
       getData(dispatch);
     } else {
-      await axios.delete(`http://localhost:5001/cart/${id}`);
-      dispatch({ type: "CART_REMOVE_ITEM", payload: { id } });
-      await axios.patch(`http://localhost:5000/products/${id}`, {
+      await axios.delete(`http://localhost:8080/api/carts/${_id}`);
+      dispatch({ type: "CART_REMOVE_ITEM", payload: { _id } });
+      await axios.patch(`http://localhost:5050/api/products/${_id}`, {
         countInStock: product.countInStock + 1,
         inCart: 0,
       });
@@ -86,14 +102,14 @@ const removeOneFromCartHandler = async (id) => {
 const clearCartHandler = async () => {
   try {
     
-    const cartItemIds = state.cart.cartItems.map((item) => item.id);
+    const cartItemIds = state.cart.cartItems.map((item) => item._id);
 
     
-    for (const id of cartItemIds) {
+    for (const _id of cartItemIds) {
       try {
-        await axios.delete(`http://localhost:5001/cart/${id}`);
+        await axios.delete(`http://localhost:8080/api/carts/${_id}`);
       } catch (error) {
-        console.error(`Error deleting item with ID ${id}:`, error);
+        console.error(`Error deleting item with ID ${_id}:`, error);
       }
     }
 
@@ -103,14 +119,14 @@ const clearCartHandler = async () => {
     
     for (const item of state.cart.cartItems) {
       try {
-        const product = state.products.find((p) => p.id === item.id);
-        await axios.patch(`http://localhost:5000/products/${item.id}`, {
+        const product = state.products.find((p) => p._id === item._id);
+        await axios.patch(`http://localhost:5050/api/products/${item._id}`, {
           countInStock: product.countInStock + item.inCart,
           inCart: 0,
         });
       } catch (error) {
         console.error(
-          `Error updating stock for item with ID ${item.id}:`,
+          `Error updating stock for item with ID ${item._id}:`,
           error
         );
       }
@@ -155,7 +171,7 @@ const clearCartHandler = async () => {
         {cart && cart.cartItems && cart.cartItems.length > 0 ? (
           <ul className={styles["cart-items-list"]}>
             {cart.cartItems.map((item) => (
-              <li key={item.id} className={styles["cart-item"]}>
+              <li key={item._id} className={styles["cart-item"]}>
                 <div className={styles["cart-item-details"]}>
                   <div className={styles["cart-item-image-container"]}>
                     <img
@@ -178,13 +194,13 @@ const clearCartHandler = async () => {
                     <div className={styles["cart-item-actions"]}>
                       <button
                         className={`btn btn-outline-primary ${styles["btn-remove-one"]}`}
-                        onClick={() => removeOneFromCartHandler(item.id)}
+                        onClick={() => removeOneFromCartHandler(item._id)}
                       >
                         Remove One
                       </button>
                       <button
                         className={`btn btn-outline-primary ${styles["btn-remove-all"]}`}
-                        onClick={() => removeFromCartHandler(item.id)}
+                        onClick={() => removeFromCartHandler(item._id)}
                       >
                         Remove All
                       </button>

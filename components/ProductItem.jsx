@@ -8,11 +8,12 @@ import styles from "../styles/ProductItem.module.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 
+
 const getData = async (dispatch) => {
   try {
-    const res = await axios.get("http://localhost:5000/products");
-    const res2 = await axios.get("http://localhost:5001/cart");
-
+    const res = await axios.get("http://localhost:5050/api/products");
+    const res2 = await axios.get("http://localhost:8080/api/carts");
+    
     dispatch({
       type: "READ_STATE",
       payload: { 
@@ -26,6 +27,9 @@ const getData = async (dispatch) => {
 };
 
 export default function ProductItem({ product }) {
+
+  
+
   const { state, dispatch } = useContext(Store);
 
 
@@ -49,7 +53,7 @@ useEffect(() => {
 }, [product.inCart]);
 
 const handleShow = () => {
-
+  
   if (isOutOfStock) {
     console.log("Out of Stock");
     return;
@@ -82,22 +86,22 @@ const handleClose = () => {
   };
   const confirmPurchaseHandler = async () => {
     try {
-      console.log(state);
+      console.log("Current state:", state);
 
-      const productInStock = products.find((p) => p.id === product.id);
-      console.log(cart);
+      const productInStock = products.find((p) => p._id === product._id);
+      console.log("Current cart:", cart);
       const existingCartItem = cart.cartItems.find((p) => {
-        console.log("product.id:", product.id);
-        console.log("p.id:", p.id);
-        return p.id === product.id;
+        console.log("product._id:", product._id);
+        console.log("p._id:", p._id);
+        return p._id === product._id;
       });
 
       console.log("Existing Cart Item:", existingCartItem);
       if (productInStock && productInStock.countInStock >= selectedQuantity) {
         if (existingCartItem) {
-
+          
           await axios.patch(
-            `http://localhost:5001/cart/${existingCartItem.id}`,
+            `http://localhost:8080/api/carts/${existingCartItem._id}`,
             {
               countInStock: existingCartItem.countInStock - selectedQuantity,
               inCart: existingCartItem.inCart + selectedQuantity,
@@ -105,15 +109,15 @@ const handleClose = () => {
           );
         } else {
 
-          await axios.post("http://localhost:5001/cart", {
+          await axios.post("http://localhost:8080/api/carts", {
             ...product,
             countInStock: productInStock.countInStock - selectedQuantity,
             inCart: productInStock.inCart + selectedQuantity,
           });
         }
-
-
-        await axios.patch(`http://localhost:5000/products/${product.id}`, {
+        console.log("es esto");
+        console.log(`${product._id}`);
+        await axios.patch(`http://localhost:5050/api/products/${product._id}`, {
           countInStock: productInStock.countInStock - selectedQuantity,
           inCart: productInStock.inCart + selectedQuantity,
         });
@@ -137,6 +141,8 @@ const handleClose = () => {
     setShowConfirmationModal(false);
     
   };
+
+  
 
   return (
     <div className="col">

@@ -9,8 +9,8 @@ import Footer from "../components/Footer";
 import styles from "../styles/Index.module.css";
 
 
-
 export default function Home() {
+
   return (
     <div>
       <div>
