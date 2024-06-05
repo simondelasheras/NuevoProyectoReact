@@ -1,11 +1,9 @@
-
 import React, { useContext, useEffect, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { Store } from "../utils/Store";
 import styles from "../styles/Logo.module.css";
-
 
 const OffcanvasContent = dynamic(() => import("./OffCanvasContent"), {
   ssr: false,

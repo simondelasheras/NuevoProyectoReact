@@ -9,7 +9,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  
+  z-index: 1040; /* Asegúrate de que el z-index sea menor que el del modal */
   
 }
 
@@ -206,3 +206,45 @@
 .newButton:active {
   transform: scale(0.9); 
 }
+
+.customSection {
+  background-color: #212529;
+  color: white;
+  border-bottom: 2px solid white;
+}
+
+.customPlusSection {
+  background-color: #212529;
+  color: white;
+  border-top: 0px solid white;
+}
+
+.modalCustom {
+  z-index: 1055 !important; /* Asegúrate de que el z-index sea mayor que el offcanvas */
+}
+
+.modal-backdrop {
+  z-index: 1050 !important; /* Asegúrate de que el z-index del backdrop sea menor que el del modal */
+}
+
+.btn-custom {
+  color: #fff !important;
+  background-color: #e64843 !important;
+  border-color: #e64843 !important;
+  transition: filter 0.3s ease, opacity 0.3s ease, background-color 0s !important;
+  text-decoration: none !important;
+  outline: none !important;
+  -webkit-transition: filter 0.3s ease, opacity 0.3s ease, background-color 0s !important;
+  -moz-transition: filter 0.3s ease, opacity 0.3s ease, background-color 0s !important;
+  -ms-transition: filter 0.3s ease, opacity 0.3s ease, background-color 0s !important;
+  -o-transition: filter 0.3s ease, opacity 0.3s ease, background-color 0s !important;
+}
+
+.btn-custom:hover,
+.btn-custom:focus {
+  background-color: #e64843 !important;
+  outline: none !important;
+  filter: brightness(95%);
+  -webkit-filter: brightness(90%);
+}
+
