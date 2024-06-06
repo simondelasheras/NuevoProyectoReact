@@ -29,29 +29,41 @@ const OffcanvasContent = ({ offcanvasInstance }) => {
   const [showModal, setShowModal] = useState(false);
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
-  const [offcanvasOpen, setOffcanvasOpen] = useState(true); // Cambiado a false para que el offcanvas esté cerrado por defecto
+  const [offcanvasOpen, setOffcanvasOpen] = useState(false);
 
   const emailInputRef = useRef(null);
+  const offcanvasRef = useRef(null);
 
   useEffect(() => {
-    // Establecer el foco en el input del email cuando se abre el modal
     if (showModal) {
       emailInputRef.current.focus();
+      if (offcanvasRef.current) {
+        offcanvasRef.current.classList.remove("show");
+      }
     }
   }, [showModal]);
 
-  
   const handleBuyClick = () => {
     setShowModal(true);
-    setOffcanvasOpen(false); // Cerrar el offcanvas al abrir el modal de compra
+    setOffcanvasOpen(false);
   };
 
   const handleClose = () => {
     setShowModal(false);
     setEmail("");
     setError("");
-    setOffcanvasOpen(false); // Mantener el offcanvas cerrado al cerrar el modal de compra
+    setOffcanvasOpen(false);
   };
+
+  useEffect(() => {
+    if (offcanvasRef.current) {
+      if (offcanvasOpen) {
+        offcanvasRef.current.classList.add("show");
+      } else {
+        offcanvasRef.current.classList.remove("show");
+      }
+    }
+  }, [offcanvasOpen]);
 
 const handlePurchase = async () => {
   if (!email) {
@@ -181,7 +193,8 @@ const handlePurchase = async () => {
 
   return (
     <div
-      className={`offcanvas offcanvas-end ${offcanvasOpen ? "show" : ""}`} // Agregado la clase 'show' si offcanvasOpen es true
+      ref={offcanvasRef}
+      className={`offcanvas offcanvas-end ${offcanvasOpen ? "show" : ""}`}
       tabIndex="-1"
       id="offcanvasRight"
       aria-labelledby="offcanvasRightLabel"
