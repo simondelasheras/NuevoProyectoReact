@@ -29,7 +29,7 @@ const OffcanvasContent = ({ offcanvasInstance }) => {
   const [showModal, setShowModal] = useState(false);
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
-  const [offcanvasOpen, setOffcanvasOpen] = useState(true); // Cambiado a true para que el offcanvas esté abierto por defecto
+  const [offcanvasOpen, setOffcanvasOpen] = useState(true); // Cambiado a false para que el offcanvas esté cerrado por defecto
 
   const emailInputRef = useRef(null);
 
@@ -40,6 +40,7 @@ const OffcanvasContent = ({ offcanvasInstance }) => {
     }
   }, [showModal]);
 
+  
   const handleBuyClick = () => {
     setShowModal(true);
     setOffcanvasOpen(false); // Cerrar el offcanvas al abrir el modal de compra
@@ -49,7 +50,7 @@ const OffcanvasContent = ({ offcanvasInstance }) => {
     setShowModal(false);
     setEmail("");
     setError("");
-    setOffcanvasOpen(true); // Abrir el offcanvas al cerrar el modal de compra
+    setOffcanvasOpen(false); // Mantener el offcanvas cerrado al cerrar el modal de compra
   };
 
 const handlePurchase = async () => {
