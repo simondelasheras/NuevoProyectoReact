@@ -156,7 +156,9 @@ const handleClose = () => {
           <p className="card-text">{product.type}</p>
           <p className="card-text">${product.price}</p>
           <button
-            className={`btn ${isOutOfStock ? "btn-secondary" : "btn-primary"}`}
+            className={`btn ${isOutOfStock ? "btn-secondary" : "btn-primary"} ${
+              styles["btn-view-product"]
+            }`}
             onClick={handleShow}
             disabled={isOutOfStock}
           >
@@ -209,13 +211,15 @@ const handleClose = () => {
               <Button
                 variant="primary"
                 onClick={() => addToCartHandler(product)}
+                className={styles["btn-add-to-cart"]}
               >
                 Add to Cart
               </Button>
+
               <Button
                 variant="secondary"
                 onClick={handleClose}
-                className={styles["custom-background"]}
+                className={`${styles["btn-close-modal"]} ${styles["custom-background"]}`}
               >
                 Close
               </Button>
@@ -244,13 +248,17 @@ const handleClose = () => {
             </Modal.Body>
             <Modal.Footer className={styles.customPlusSection}>
               {/* Invierte el orden de los botones */}
-              <Button variant="primary" onClick={confirmPurchaseHandler}>
+              <Button
+                variant="primary"
+                onClick={confirmPurchaseHandler}
+                className={styles["btn-yes"]}
+              >
                 Yes
               </Button>
               <Button
                 variant="secondary"
                 onClick={cancelPurchaseHandler}
-                className={styles["custom-background"]}
+                className={`${styles["btn-no"]} ${styles["custom-background"]}`}
               >
                 No
               </Button>

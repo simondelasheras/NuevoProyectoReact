@@ -10,28 +10,34 @@ function ImgOverlayExample() {
         <div className="row">
           <div className="col-md-6">
             <Link href="#men-section">
-                <Card className={`bg-dark text-white ${styles.firstCard}`}>
-                  <Card.Img src="https://i.imgur.com/Ng1iHXO.jpg" alt="Card image" />
-                  <Card.ImgOverlay>
-                    <Card.Title className={styles.cardTitle}>Men Section</Card.Title>
-                    <Card.Text>
-                      {/* Contenido de la primera tarjeta */}
-                    </Card.Text>
-                  </Card.ImgOverlay>
-                </Card>
+              <Card className={`bg-dark text-white ${styles.firstCard}`}>
+                <Card.Img
+                  src="https://imgur.com/LU71eiy.jpg"
+                  alt="Card image"
+                />
+                <Card.ImgOverlay>
+                  <Card.Title className={styles.cardTitle}>
+                    Men Section
+                  </Card.Title>
+                  <Card.Text>{/* Contenido de la primera tarjeta */}</Card.Text>
+                </Card.ImgOverlay>
+              </Card>
             </Link>
           </div>
           <div className="col-md-6">
             <Link href="#women-section">
-                <Card className={`bg-dark text-white ${styles.secondCard}`}>
-                  <Card.Img src="https://i.imgur.com/LasBh0t.jpg" alt="Card image" />
-                  <Card.ImgOverlay>
-                    <Card.Title className={styles.cardTitle}>Women Section</Card.Title>
-                    <Card.Text>
-                      {/* Contenido de la segunda tarjeta */}
-                    </Card.Text>
-                  </Card.ImgOverlay>
-                </Card>
+              <Card className={`bg-dark text-white ${styles.secondCard}`}>
+                <Card.Img
+                  src="https://imgur.com/knV47VB.jpg"
+                  alt="Card image"
+                />
+                <Card.ImgOverlay>
+                  <Card.Title className={styles.cardTitle}>
+                    Women Section
+                  </Card.Title>
+                  <Card.Text>{/* Contenido de la segunda tarjeta */}</Card.Text>
+                </Card.ImgOverlay>
+              </Card>
             </Link>
           </div>
         </div>

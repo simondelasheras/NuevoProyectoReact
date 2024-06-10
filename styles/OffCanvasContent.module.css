@@ -135,15 +135,16 @@
   color: #fff !important;
   background-color: #e64843 !important;
   border-color: #e64843 !important;
-  transition: filter 0.3s ease, opacity 0.3s ease, background-color 0s !important;
+
   text-decoration: none !important;
   outline: none !important;
   width: 150px;
   height: 40px;
-  -webkit-transition: filter 0.3s ease, opacity 0.3s ease, background-color 0s !important;
-  -moz-transition: filter 0.3s ease, opacity 0.3s ease, background-color 0s !important;
-  -ms-transition: filter 0.3s ease, opacity 0.3s ease, background-color 0s !important;
-  -o-transition: filter 0.3s ease, opacity 0.3s ease, background-color 0s !important;
+  transition: transform 0.1s;
+  -webkit-transition: transform 0.1s;
+  -moz-transition: transform 0.1s;
+  -ms-transition: transform 0.1s;
+  -o-transition: transform 0.1s;
 }
 
 
@@ -162,10 +163,15 @@
 
 .btn-remove-one:active,
 .btn-remove-all:active {
-  filter: none !important; 
-  opacity: 1 !important; 
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); 
-  transform: scale(0.98); 
+  filter: none !important;
+  opacity: 1 !important;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+  transform: scale(0.90);
+  transition: transform 0s ease;
+  -webkit-transition: transform 0s ease;
+  -moz-transition: transform 0s ease;
+  -ms-transition: transform 0s ease;
+  -o-transition: transform 0s ease; 
 }
 
 .newButton {
@@ -175,7 +181,7 @@
   background-color: transparent;
   border: none;
   cursor: pointer;
-  transition: background-color 0.3s; 
+  transition: background-color 0.3s;
 }
 
 .newButton:before,
@@ -185,9 +191,9 @@
   top: 50%;
   left: 50%;
   width: 80%;
-  height: 3px; 
+  height: 3px;
   background-color: white;
-  transition: background-color 0.3s, transform 0.3s; 
+  transition: background-color 0.3s, transform 0.3s;
 }
 
 .newButton:hover:before,
@@ -231,13 +237,13 @@
   color: #fff !important;
   background-color: #e64843 !important;
   border-color: #e64843 !important;
-  transition: filter 0.3s ease, opacity 0.3s ease, background-color 0s !important;
   text-decoration: none !important;
   outline: none !important;
-  -webkit-transition: filter 0.3s ease, opacity 0.3s ease, background-color 0s !important;
-  -moz-transition: filter 0.3s ease, opacity 0.3s ease, background-color 0s !important;
-  -ms-transition: filter 0.3s ease, opacity 0.3s ease, background-color 0s !important;
-  -o-transition: filter 0.3s ease, opacity 0.3s ease, background-color 0s !important;
+  transition: transform 0.1s;
+  -webkit-transition: transform 0.1s;
+  -moz-transition: transform 0.1s;
+  -ms-transition: transform 0.1s;
+  -o-transition: transform 0.1s;
 }
 
 .btn-custom:hover,
@@ -248,3 +254,108 @@
   -webkit-filter: brightness(90%);
 }
 
+.btn-custom:active{
+  filter: none !important;
+  opacity: 1 !important;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+  transform: scale(0.90);
+  transition: transform 0s ease;
+  -webkit-transition: transform 0s ease;
+  -moz-transition: transform 0s ease;
+  -ms-transition: transform 0s ease;
+  -o-transition: transform 0s ease;
+}
+
+/* Añadir las clases btn-buy y btn-clear-cart respetando los colores originales */
+.btn-buy {
+  color: #fff !important;
+  background-color: #198754 !important; /* Verde original */
+  border-color: #198754 !important; /* Verde original */
+    transition: transform 0.1s;
+  -webkit-transition: transform 0.1s;
+  -moz-transition: transform 0.1s;
+  -ms-transition: transform 0.1s;
+  -o-transition: transform 0.1s;
+  margin-top: 10px; /* Ajusta este valor para mover el botón más abajo */
+}
+
+.btn-buy:hover,
+.btn-buy:focus {
+  background-color: #198754 !important;
+  /*Verdeoriginalmásoscuro*/outline: none !important;
+  filter: brightness(90%);
+  /*Brillomásfuerte*/box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+  /*Sombramásfuerte*/;
+  -webkit-filter: brightness(90%);
+}
+
+.btn-buy:active {
+  filter: none !important;
+  opacity: 1 !important;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+  transform: scale(0.90);
+  transition: transform 0s ease;
+  -webkit-transition: transform 0s ease;
+  -moz-transition: transform 0s ease;
+  -ms-transition: transform 0s ease;
+  -o-transition: transform 0s ease;
+}
+
+.btn-clear-cart {
+  color: #fff !important;
+  background-color: #0d6efd !important; /* Rojo original */
+  border-color: #0d6efd !important; /* Rojo original */
+    transition: transform 0.1s;
+  -webkit-transition: transform 0.1s;
+  -moz-transition: transform 0.1s;
+  -ms-transition: transform 0.1s;
+  -o-transition: transform 0.1s;
+}
+
+.btn-clear-cart:hover,
+.btn-clear-cart:focus {
+  background-color: #0d6efd !important;
+  /*Rojooriginalmásoscuro*/outline: none !important;
+  filter: brightness(90%);
+  /*Brillomásfuerte*/box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+  /*Sombramásfuerte*/;
+  -webkit-filter: brightness(90%);
+}
+
+.btn-clear-cart:active {
+  filter: none !important;
+  opacity: 1 !important;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+  transform: scale(0.90);
+  transition: transform 0s ease;
+  -webkit-transition: transform 0s ease;
+  -moz-transition: transform 0s ease;
+  -ms-transition: transform 0s ease;
+  -o-transition: transform 0s ease;
+}
+
+.btn-clear-cart {
+  margin-top: 8px; /* Asegúrate de que no haya un margen superior que separe los botones */
+}
+  
+
+/* Clases para el botón Confirm Purchase */
+.btn-confirm {
+  transition: transform 0.1s;
+  -webkit-transition: transform 0.1s;
+  -moz-transition: transform 0.1s;
+  -ms-transition: transform 0.1s;
+  -o-transition: transform 0.1s;
+}
+
+.btn-confirm:active {
+  filter: none !important;
+  opacity: 1 !important;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+  transform: scale(0.90);
+  transition: transform 0s ease;
+  -webkit-transition: transform 0s ease;
+  -moz-transition: transform 0s ease;
+  -ms-transition: transform 0s ease;
+  -o-transition: transform 0s ease;
+}

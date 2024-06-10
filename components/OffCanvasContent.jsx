@@ -330,7 +330,11 @@ const handlePurchase = async () => {
           >
             Cancel
           </Button>
-          <Button variant="primary" onClick={handlePurchase}>
+          <Button
+            variant="primary"
+            onClick={handlePurchase}
+            className={styles["btn-confirm"]}
+          >
             Confirm Purchase
           </Button>
         </Modal.Footer>

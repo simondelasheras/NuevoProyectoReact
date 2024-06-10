@@ -148,4 +148,102 @@
   }
 }
 
+.btn-view-product {
+  transition: transform 0.1s;
+  -webkit-transition: transform 0.1s;
+  -moz-transition: transform 0.1s;
+  -ms-transition: transform 0.1s;
+  -o-transition: transform 0.1s;
+}
 
+.btn-view-product:active {
+  filter: none !important;
+  opacity: 1 !important;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+  transform: scale(0.90);
+  transition: transform 0s ease;
+  -webkit-transition: transform 0s ease;
+  -moz-transition: transform 0s ease;
+  -ms-transition: transform 0s ease;
+  -o-transition: transform 0s ease;
+}
+
+.btn-add-to-cart {
+    transition: transform 0.1s;
+  -webkit-transition: transform 0.1s;
+  -moz-transition: transform 0.1s;
+  -ms-transition: transform 0.1s;
+  -o-transition: transform 0.1s;
+}
+
+.btn-add-to-cart:active {
+    filter: none !important;
+  opacity: 1 !important;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+  transform: scale(0.90);
+  transition: transform 0s ease;
+  -webkit-transition: transform 0s ease;
+  -moz-transition: transform 0s ease;
+  -ms-transition: transform 0s ease;
+  -o-transition: transform 0s ease;
+}
+
+.btn-close-modal {
+      transition: transform 0.1s;
+  -webkit-transition: transform 0.1s;
+  -moz-transition: transform 0.1s;
+  -ms-transition: transform 0.1s;
+  -o-transition: transform 0.1s;
+}
+
+.btn-close-modal:active {
+  filter: none !important;
+  opacity: 1 !important;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+  transform: scale(0.90);
+  transition: transform 0s ease;
+  -webkit-transition: transform 0s ease;
+  -moz-transition: transform 0s ease;
+  -ms-transition: transform 0s ease;
+  -o-transition: transform 0s ease;
+}
+
+.btn-yes {
+  transition: transform 0.1s;
+  -webkit-transition: transform 0.1s;
+  -moz-transition: transform 0.1s;
+  -ms-transition: transform 0.1s;
+  -o-transition: transform 0.1s;
+}
+
+.btn-yes:active {
+  filter: none !important;
+  opacity: 1 !important;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+  transform: scale(0.90);
+  transition: transform 0s ease;
+  -webkit-transition: transform 0s ease;
+  -moz-transition: transform 0s ease;
+  -ms-transition: transform 0s ease;
+  -o-transition: transform 0s ease;
+}
+
+.btn-no {
+  transition: transform 0.1s;
+  -webkit-transition: transform 0.1s;
+  -moz-transition: transform 0.1s;
+  -ms-transition: transform 0.1s;
+  -o-transition: transform 0.1s;
+}
+
+.btn-no:active {
+  filter: none !important;
+  opacity: 1 !important;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+  transform: scale(0.90);
+  transition: transform 0s ease;
+  -webkit-transition: transform 0s ease;
+  -moz-transition: transform 0s ease;
+  -ms-transition: transform 0s ease;
+  -o-transition: transform 0s ease;
+}

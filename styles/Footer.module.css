@@ -65,10 +65,10 @@
   font-weight: bold;
 }
 
-.contactInfo a {
-  color: #ff8c00; 
+.footerEmail {
+  color: #ff8c00; /* Cambiar el color a amarillo */
+  text-decoration: underline; /* Añadir subrayado */
 }
-
 
 .aboutUs {
   flex: 1 1 auto;

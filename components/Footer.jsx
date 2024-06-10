@@ -6,8 +6,7 @@ const informacionContacto = [
   { imgSrc: "/images/Telefono.jpg", texto: "+54 911 4412-8340" },
   {
     imgSrc: "https://imgur.com/WVgU2bW.jpg",
-    texto: "powersport@gmail.com",
-    enlace: "mailto:powersport@gmail.com",
+    texto: "powersport.ok@gmail.com",
   },
 ];
 
@@ -52,13 +51,16 @@ function Footer() {
           {informacionContacto.map((info, index) => (
             <div key={index}>
               <img src={info.imgSrc} alt={info.texto} />
-              {info.enlace ? (
-                <p>
-                  <a href={info.enlace}>{info.texto}</a>
-                </p>
-              ) : (
-                <p>{info.texto}</p>
-              )}
+              {/* Aplicar la clase solo al texto del correo electrónico */}
+              <p
+                className={
+                  info.texto === "powersport.ok@gmail.com"
+                    ? styles.footerEmail
+                    : ""
+                }
+              >
+                {info.texto}
+              </p>
             </div>
           ))}
         </div>
