@@ -3,7 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { Store } from "../utils/Store";
-import styles from "../styles/Logo.module.css";
+import styles from "../styles/logo.module.css";
 
 const OffcanvasContent = dynamic(() => import("./OffCanvasContent"), {
   ssr: false,
