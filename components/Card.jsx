@@ -3,7 +3,7 @@ import Card from 'react-bootstrap/Card';
 import styles from "../styles/Card.module.css";
 import Link from 'next/link';
 
-function ImgOverlayExample() {
+function SectionCards() {
   return (
     <div className="mt-5">
       <div className="container">
@@ -13,13 +13,12 @@ function ImgOverlayExample() {
               <Card className={`bg-dark text-white ${styles.firstCard}`}>
                 <Card.Img
                   src="https://imgur.com/LU71eiy.jpg"
-                  alt="Card image"
+                  alt="Men section"
                 />
                 <Card.ImgOverlay>
                   <Card.Title className={styles.cardTitle}>
                     Men Section
                   </Card.Title>
-                  <Card.Text>{/* Contenido de la primera tarjeta */}</Card.Text>
                 </Card.ImgOverlay>
               </Card>
             </Link>
@@ -29,13 +28,12 @@ function ImgOverlayExample() {
               <Card className={`bg-dark text-white ${styles.secondCard}`}>
                 <Card.Img
                   src="https://imgur.com/knV47VB.jpg"
-                  alt="Card image"
+                  alt="Women section"
                 />
                 <Card.ImgOverlay>
                   <Card.Title className={styles.cardTitle}>
                     Women Section
                   </Card.Title>
-                  <Card.Text>{/* Contenido de la segunda tarjeta */}</Card.Text>
                 </Card.ImgOverlay>
               </Card>
             </Link>
@@ -46,5 +44,5 @@ function ImgOverlayExample() {
   );
 }
 
-export default ImgOverlayExample;
+export default SectionCards;
 

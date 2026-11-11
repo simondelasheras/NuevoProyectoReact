@@ -18,7 +18,7 @@ import {
 import styles from "../styles/OffCanvasContent.module.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const OffcanvasContent = ({ offcanvasInstance }) => {
+const OffcanvasContent = () => {
   const { state, dispatch } = useContext(Store);
   const { cart, cartStatus, settleStatus } = state;
   const [showModal, setShowModal] = useState(false);
@@ -335,12 +335,11 @@ const OffcanvasContent = ({ offcanvasInstance }) => {
         )}
       </div>
 
-      {/* Modal de confirmación de compra */}
       <Modal
         show={showModal}
         onHide={handleClose}
         centered
-        className={styles.modalCustom} // Aplica la clase modal-custom al modal
+        className={styles.modalCustom}
       >
         <Modal.Header className={styles.customSection}>
           <Modal.Title>

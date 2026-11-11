@@ -51,7 +51,7 @@ export default function Layout({ children }) {
           <Link href="/">
             <img
               src="https://i.imgur.com/mrT3S5k.jpg"
-              alt="Power-Sport-Logo"
+              alt="Power Sport"
               className={styles.navbarImg}
             />
           </Link>
@@ -127,7 +127,6 @@ export default function Layout({ children }) {
         </p>
       ) : null}
       <main>{children || null}</main>{" "}
-      {/* Asegura que children sea siempre un valor válido */}
       <OffcanvasContent />
     </div>
   );

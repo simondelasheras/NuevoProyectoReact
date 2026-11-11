@@ -13,11 +13,6 @@
   font-weight: 500; 
 }
 
-.outOfStock {
-  background-color: rgb(202, 197, 197); 
-  cursor: not-allowed;
-}
-
 
 
 .card {

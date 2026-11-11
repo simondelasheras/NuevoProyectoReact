@@ -1,6 +1,6 @@
 import Layout from "../components/Layout";
 import BootstrapCarousel from "../components/Carousel";
-import Card from "../components/Card";
+import SectionCards from "../components/Card";
 import { ProductCategory } from "../utils/ProductUtils";
 import Footer from "../components/Footer";
 import styles from "../styles/Index.module.css";
@@ -19,7 +19,7 @@ export default function Home() {
         <section id="shop">
           <h2 className={`text-center mt-5 mb-5 ${styles.indexTitle}`}>SHOP</h2>
         </section>
-        <Card />
+        <SectionCards />
       </div>
       <div className="container2">
         <h2 className={`text-center mt-5 mb-5 ${styles.indexTitle}`}>

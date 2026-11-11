@@ -7,8 +7,6 @@ import { Store, getData } from "../utils/Store";
 import styles from "../styles/ProductItem.module.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-
-
 export default function ProductItem({ product }) {
   const { state, dispatch } = useContext(Store);
 
@@ -24,11 +22,10 @@ export default function ProductItem({ product }) {
     if (isOutOfStock) return;
     setShowModal(true);
   };
-const handleClose = () => {
-  setShowModal(false);
-
-  setSelectedQuantity(1);
-};
+  const handleClose = () => {
+    setShowModal(false);
+    setSelectedQuantity(1);
+  };
 
   const handleQuantityChange = (e) => {
     const selectedQuantity = parseInt(e.target.value, 10);
@@ -45,7 +42,7 @@ const handleClose = () => {
     setShowModal(false);
     setShowConfirmationModal(true);
   };
-  const confirmPurchaseHandler = async () => {
+  const confirmAddToCart = async () => {
     try {
       const productInStock = products.find((p) => p._id === product._id);
       const existingCartItem = (cart && cart.cartItems ? cart.cartItems : []).find(
@@ -58,7 +55,6 @@ const handleClose = () => {
         selectedQuantity > 0
       ) {
         if (existingCartItem) {
-          
           await axios.patch(
             `http://localhost:8080/api/carts/${existingCartItem._id}`,
             {
@@ -67,7 +63,6 @@ const handleClose = () => {
             }
           );
         } else {
-
           await axios.post("http://localhost:8080/api/carts", {
             ...product,
             countInStock: productInStock.countInStock - selectedQuantity,
@@ -78,7 +73,6 @@ const handleClose = () => {
           countInStock: productInStock.countInStock - selectedQuantity,
           inCart: productInStock.inCart + selectedQuantity,
         });
-
 
         getData(dispatch);
       }
@@ -91,12 +85,9 @@ const handleClose = () => {
     setSelectedQuantity(1);
   };
 
-  const cancelPurchaseHandler = () => {
+  const cancelAddToCart = () => {
     setShowConfirmationModal(false);
-    
   };
-
-  
 
   return (
     <div className="col">
@@ -104,7 +95,7 @@ const handleClose = () => {
         <h5 className={`card-title ${styles["custom-card-title"]}`}>
           {product.name}
         </h5>
-        <img src={product.image} alt="" className="imagen-card" />
+        <img src={product.image} alt={product.name} className="imagen-card" />
         <div className="card-body">
           <p className="card-text">{product.patent}</p>
           <p className="card-text">{product.type}</p>
@@ -119,7 +110,6 @@ const handleClose = () => {
             {isOutOfStock ? "Out of Stock" : "View Product"}
           </button>
 
-          {/* Modal */}
           <Modal show={showModal} onHide={handleClose} centered>
             <Modal.Header className={styles.customSection}>
               <button
@@ -132,15 +122,14 @@ const handleClose = () => {
             <Modal.Body className={styles.customSection}>
               <ProductDetails product={product} />
 
-              {/* Selección de cantidad */}
               <div className="mb-3">
-                <label htmlFor="quantity">
+                <label htmlFor={`quantity-${product._id}`}>
                   <strong>Quantity:</strong>
                   &nbsp;
                 </label>
                 <select
                   className={`quantity-selector ${styles.quantitySelector}`}
-                  id="quantity"
+                  id={`quantity-${product._id}`}
                   value={selectedQuantity}
                   onChange={handleQuantityChange}
                 >
@@ -152,7 +141,6 @@ const handleClose = () => {
                 </select>
               </div>
 
-              {/* Subtotal */}
               <div>
                 <strong>Subtotal: </strong>
                 <span className={`subtotal-frame ${styles.subtotalFrame}`}>
@@ -161,7 +149,6 @@ const handleClose = () => {
               </div>
             </Modal.Body>
             <Modal.Footer className={styles.customPlusSection}>
-              {/* Invierte el orden de los botones */}
               <Button
                 variant="primary"
                 onClick={addToCartHandler}
@@ -180,7 +167,6 @@ const handleClose = () => {
             </Modal.Footer>
           </Modal>
 
-          {/* Modal de confirmación de agregado al carrito */}
           <Modal show={showConfirmationModal} centered>
             <Modal.Header className={styles.customSection}>
               <Modal.Title>Add to cart</Modal.Title>
@@ -201,17 +187,16 @@ const handleClose = () => {
               </p>
             </Modal.Body>
             <Modal.Footer className={styles.customPlusSection}>
-              {/* Invierte el orden de los botones */}
               <Button
                 variant="primary"
-                onClick={confirmPurchaseHandler}
+                onClick={confirmAddToCart}
                 className={styles["btn-yes"]}
               >
                 Yes
               </Button>
               <Button
                 variant="secondary"
-                onClick={cancelPurchaseHandler}
+                onClick={cancelAddToCart}
                 className={`${styles["btn-no"]} ${styles["custom-background"]}`}
               >
                 No
