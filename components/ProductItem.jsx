@@ -3,6 +3,7 @@ import React, { useState, useContext } from "react";
 import { Modal, Button } from "react-bootstrap";
 import axios from "axios";
 import ProductDetails from "./ProductDetails";
+import { cartsUrl, productsUrl } from "../utils/api";
 import { Store, getData } from "../utils/Store";
 import styles from "../styles/ProductItem.module.css";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -56,20 +57,20 @@ export default function ProductItem({ product }) {
       ) {
         if (existingCartItem) {
           await axios.patch(
-            `http://localhost:8080/api/carts/${existingCartItem._id}`,
+            `${cartsUrl}/${existingCartItem._id}`,
             {
               countInStock: existingCartItem.countInStock - selectedQuantity,
               inCart: existingCartItem.inCart + selectedQuantity,
             }
           );
         } else {
-          await axios.post("http://localhost:8080/api/carts", {
+          await axios.post(cartsUrl, {
             ...product,
             countInStock: productInStock.countInStock - selectedQuantity,
             inCart: productInStock.inCart + selectedQuantity,
           });
         }
-        await axios.patch(`http://localhost:5050/api/products/${product._id}`, {
+        await axios.patch(`${productsUrl}/${product._id}`, {
           countInStock: productInStock.countInStock - selectedQuantity,
           inCart: productInStock.inCart + selectedQuantity,
         });
