@@ -1,31 +1,14 @@
 
 import { useState, useContext, useEffect, useLayoutEffect, useRef } from "react";
 import { Modal, Button } from "react-bootstrap";
-import { Store } from "../utils/Store";
+import { Store, getData } from "../utils/Store";
 import styles from "../styles/OffCanvasContent.module.css";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const getData = async (dispatch) => {
-  try {
-    const res = await axios.get("http://localhost:5050/api/products");
-    const res2 = await axios.get("http://localhost:8080/api/carts");
-    
-    dispatch({
-      type: "READ_STATE",
-      payload: {
-        products: res.data,
-        cart: res2.data,
-      },
-    });
-  } catch (error) {
-    console.error("Error getting data:", error);
-  }
-};
-
 const OffcanvasContent = ({ offcanvasInstance }) => {
   const { state, dispatch } = useContext(Store);
-  const { cart, products } = state;
+  const { cart, cartStatus } = state;
   const [showModal, setShowModal] = useState(false);
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
@@ -265,7 +248,23 @@ const OffcanvasContent = ({ offcanvasInstance }) => {
       </div>
       <div className={`offcanvas-body ${styles["cart-content"]}`}>
         <h6 className={styles["cart-content-title"]}>In Cart:</h6>
-        {cart && cart.cartItems && cart.cartItems.length > 0 ? (
+        {cartStatus === "error" ? (
+          <div className={styles.cartEmptyMessage} role="alert">
+            <p>No pudimos cargar el carrito</p>
+            <button
+              type="button"
+              className="btn btn-outline-primary"
+              onClick={() => getData(dispatch)}
+            >
+              Reintentar
+            </button>
+          </div>
+        ) : cartStatus === "loading" &&
+          !(cart && cart.cartItems && cart.cartItems.length > 0) ? (
+          <div className={styles.cartEmptyMessage} aria-busy="true">
+            Cargando carrito...
+          </div>
+        ) : cart && cart.cartItems && cart.cartItems.length > 0 ? (
           <ul className={styles["cart-items-list"]}>
             {cart.cartItems.map((item) => (
               <li key={item._id} className={styles["cart-item"]}>
@@ -310,7 +309,7 @@ const OffcanvasContent = ({ offcanvasInstance }) => {
         ) : (
           <div className={styles.cartEmptyMessage}>Cart is empty.</div>
         )}
-        {cart && cart.cartItems && cart.cartItems.length > 0 && (
+        {cartStatus !== "error" && cart && cart.cartItems && cart.cartItems.length > 0 && (
           <div className={styles["cart-total"]}>
             <div className={styles["cart-total-label"]}>Total:</div>
             <div className={styles["cart-total-amount"]}>
@@ -318,7 +317,7 @@ const OffcanvasContent = ({ offcanvasInstance }) => {
             </div>
           </div>
         )}
-        {cart && cart.cartItems && cart.cartItems.length > 0 && (
+        {cartStatus !== "error" && cart && cart.cartItems && cart.cartItems.length > 0 && (
           <>
             <button
               className={`btn btn-success ${styles["btn-buy"]}`}

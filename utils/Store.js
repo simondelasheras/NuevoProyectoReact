@@ -6,50 +6,88 @@ export const Store = createContext();
 
 const initialState = {
   products: [],
-  cart:  []
+  cart: null,
+  cartStatus: "loading",
 };
 
+export const CART_LOAD_TIMEOUT_MS = 8000;
 
-const getData = async (dispatch) => {
-  try {
-    
-    const resProducts = await axios("http://localhost:5050/api/products");
-    
-   
-    
-    const resCart = await axios("http://localhost:8080/api/carts");
-    
+// Un reintento puede convivir con el timeout anterior. Solo aplica la última respuesta.
+let latestCartRequest = 0;
 
-    const newProducts = resProducts.data;
-   
-    const newCartItem = resCart.data;
+export const getData = async (dispatch) => {
+  const requestId = ++latestCartRequest;
+  const isCurrent = () => requestId === latestCartRequest;
 
-    const cartItems = (newCartItem) || [];
-    
+  dispatch({ type: "CART_LOAD_START" });
 
+  const productsPromise = axios
+    .get("http://localhost:5050/api/products", { timeout: CART_LOAD_TIMEOUT_MS })
+    .then((res) => {
+      if (!isCurrent() || !Array.isArray(res.data)) {
+        return null;
+      }
+      dispatch({ type: "PRODUCTS_LOADED", payload: res.data });
+      return res.data;
+    })
+    .catch((error) => {
+      console.error("Error updating state:", error);
+      return null;
+    });
+
+  const cartPromise = axios
+    .get("http://localhost:8080/api/carts", { timeout: CART_LOAD_TIMEOUT_MS })
+    .then((res) => (Array.isArray(res.data) ? res.data : []))
+    .catch((error) => {
+      console.error("Error updating state:", error);
+      return null;
+    });
+
+  const [products, cartItems] = await Promise.all([productsPromise, cartPromise]);
+
+  if (!isCurrent()) {
+    return;
+  }
+
+  if (cartItems) {
     dispatch({
       type: "READ_STATE",
       payload: {
-        products: newProducts,
-        cart: 0,
+        products: products === null ? undefined : products,
+        cart: cartItems,
       },
     });
-
-    console.log("State updated successfully!");
-  } catch (error) {
-    console.error("Error updating state:", error);
+    return;
   }
+
+  dispatch({ type: "CART_LOAD_ERROR" });
 };
 
 function reducer(state, action) {
   switch (action.type) {
+    case "CART_LOAD_START": {
+      return { ...state, cartStatus: "loading" };
+    }
+    case "CART_LOAD_ERROR": {
+      return { ...state, cartStatus: "error" };
+    }
+    case "PRODUCTS_LOADED": {
+      if (!Array.isArray(action.payload)) {
+        return state;
+      }
+      return { ...state, products: action.payload };
+    }
     case "READ_STATE": {
-      const cartItems = action.payload.cart || [];
+      const cartItems = Array.isArray(action.payload.cart) ? action.payload.cart : [];
+      const products = Array.isArray(action.payload.products)
+        ? action.payload.products
+        : state.products;
 
       return {
         ...state,
-        products: action.payload.products,
+        products,
         cart: { cartItems },
+        cartStatus: "ready",
       };
     }
     // case "CART_ADD_ITEM": {

@@ -3,39 +3,14 @@ import React, { useState, useContext, useEffect } from "react";
 import { Modal, Button } from "react-bootstrap";
 import axios from "axios";
 import ProductDetails from "./ProductDetails";
-import { Store } from "../utils/Store";
+import { Store, getData } from "../utils/Store";
 import styles from "../styles/ProductItem.module.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 
 
-const getData = async (dispatch) => {
-  try {
-    const res = await axios.get("http://localhost:5050/api/products");
-    const res2 = await axios.get("http://localhost:8080/api/carts");
-    
-    dispatch({
-      type: "READ_STATE",
-      payload: { 
-        products: res.data ,
-        cart: res2.data,
-      },
-    });
-  } catch (error) {
-    console.error("Error getting data:", error);
-  }
-};
-
 export default function ProductItem({ product }) {
-
-  
-
   const { state, dispatch } = useContext(Store);
-
-
-  useEffect(() => {
-    getData(dispatch);
-  }, []); 
 
   const [showModal, setShowModal] = useState(false);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
@@ -86,11 +61,9 @@ const handleClose = () => {
   };
   const confirmPurchaseHandler = async () => {
     try {
-      console.log("Current state:", state);
-
       const productInStock = products.find((p) => p._id === product._id);
       console.log("Current cart:", cart);
-      const existingCartItem = cart.cartItems.find((p) => {
+      const existingCartItem = (cart && cart.cartItems ? cart.cartItems : []).find((p) => {
         console.log("product._id:", product._id);
         console.log("p._id:", p._id);
         return p._id === product._id;

@@ -11,7 +11,7 @@ const OffcanvasContent = dynamic(() => import("./OffCanvasContent"), {
 
 export default function Layout({ title, children }) {
   const { state, dispatch } = useContext(Store);
-  const { cart } = state;
+  const { cart, cartStatus } = state;
 
   const [cartItemsCount, setCartItemsCount] = useState(0);
 
@@ -101,9 +101,26 @@ export default function Layout({ title, children }) {
               <li className="nav-item">
                 <button className="nav-link" onClick={openOffcanvas}>
                   Cart{" "}
-                  <span className="text-white bg-danger rounded p-1">
-                    {cart && cart.cartItems ? cart.cartItems.length : 0}
-                  </span>{" "}
+                  {cartStatus === "error" ? (
+                    <span
+                      className="text-dark bg-warning rounded p-1"
+                      aria-label="No pudimos cargar el carrito"
+                    >
+                      !
+                    </span>
+                  ) : cart && Array.isArray(cart.cartItems) ? (
+                    <span className="text-white bg-danger rounded p-1">
+                      {cart.cartItems.length}
+                    </span>
+                  ) : (
+                    <span
+                      className="text-white bg-secondary rounded p-1"
+                      aria-busy="true"
+                      aria-label="Cargando carrito"
+                    >
+                      ...
+                    </span>
+                  )}{" "}
                 </button>
               </li>
             </ul>
