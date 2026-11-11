@@ -78,7 +78,7 @@ function Footer() {
           </p>
           <div className={styles.socialLinks}>
             {enlacesRedesSociales.map((enlace, index) => (
-              <a key={index} href={enlace.enlace} target="_blank">
+              <a key={index} href={enlace.enlace} target="_blank" rel="noopener noreferrer">
                 <img src={enlace.imgSrc} alt={enlace.alt} />
               </a>
             ))}

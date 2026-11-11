@@ -3,7 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { Store } from "../utils/Store";
-import styles from "../styles/Logo.module.css";
+import styles from "../styles/logo.module.css";
 
 const OffcanvasContent = dynamic(() => import("./OffCanvasContent"), {
   ssr: false,
@@ -11,7 +11,7 @@ const OffcanvasContent = dynamic(() => import("./OffCanvasContent"), {
 
 export default function Layout({ title, children }) {
   const { state, dispatch } = useContext(Store);
-  const { cart } = state;
+  const { cart, cartStatus, purchaseMessage } = state;
 
   const [cartItemsCount, setCartItemsCount] = useState(0);
 
@@ -33,9 +33,11 @@ export default function Layout({ title, children }) {
       }
 
       if (typeof window !== "undefined" && window.bootstrap) {
-        const offcanvas = new window.bootstrap.Offcanvas(
-          document.getElementById("offcanvasRight")
-        );
+        const element = document.getElementById("offcanvasRight");
+        if (!element) {
+          return;
+        }
+        const offcanvas = window.bootstrap.Offcanvas.getOrCreateInstance(element);
         offcanvas.show();
       }
     } catch (error) {
@@ -99,15 +101,37 @@ export default function Layout({ title, children }) {
               <li className="nav-item">
                 <button className="nav-link" onClick={openOffcanvas}>
                   Cart{" "}
-                  <span className="text-white bg-danger rounded p-1">
-                    {cart && cart.cartItems ? cart.cartItems.length : 0}
-                  </span>{" "}
+                  {cartStatus === "error" ? (
+                    <span
+                      className="text-dark bg-warning rounded p-1"
+                      aria-label="We couldn't load the cart"
+                    >
+                      !
+                    </span>
+                  ) : cart && Array.isArray(cart.cartItems) ? (
+                    <span className="text-white bg-danger rounded p-1">
+                      {cart.cartItems.length}
+                    </span>
+                  ) : (
+                    <span
+                      className="text-white bg-secondary rounded p-1"
+                      aria-busy="true"
+                      aria-label="Loading cart"
+                    >
+                      ...
+                    </span>
+                  )}{" "}
                 </button>
               </li>
             </ul>
           </div>
         </div>
       </nav>
+      {purchaseMessage ? (
+        <p role="alert" className="alert alert-warning text-center mb-0">
+          {purchaseMessage}
+        </p>
+      ) : null}
       <main>{children || null}</main>{" "}
       {/* Asegura que children sea siempre un valor válido */}
       <OffcanvasContent />
