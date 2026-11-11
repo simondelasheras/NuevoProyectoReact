@@ -106,50 +106,6 @@ function reducer(state, action) {
         cartStatus: "ready",
       };
     }
-    // case "CART_ADD_ITEM": {
-    //   const { id, quantity } = action.payload;
-
-    //   // Verifica si state.cart está definido y tiene la propiedad cartItems
-    //   if (!state.cart || !state.cart.cartItems) {
-    //     console.error("Cart not found or not in the expected format");
-    //     return state;
-    //   }
-
-    //   const productToAdd = state.products.find((product) => product.id === id);
-
-    //   if (!productToAdd) {
-    //     console.error("Product not found:", id);
-    //     return state;
-    //   }
-
-    //   const existingCart = state.cart || {};
-    //   const existingCartItems = existingCart.cartItems || [];
-
-    //   const existingItemIndex = existingCartItems.findIndex(
-    //     (item) => item.id === id
-    //   );
-
-    //   const updatedCartItems = [...existingCartItems];
-
-    //   if (existingItemIndex !== -1) {
-    //     updatedCartItems[existingItemIndex].inCart += quantity;
-    //   } else {
-    //     updatedCartItems.push({ ...productToAdd, inCart: quantity });
-    //   }
-
-    //   // Actualiza el array cartItems en el estado del carrito
-    //   const updatedCart = {
-    //     ...existingCart,
-    //     cartItems: updatedCartItems,
-    //   };
-
-    //   // Agrega las actualizaciones al estado
-    //   return {
-    //     ...state,
-    //     cart: updatedCart,
-    //   };
-    // }
-
     case "CART_REMOVE_ITEM": {
       const cartItems = state.cart.cartItems.filter(
         (item) => item._id !== action.payload._id

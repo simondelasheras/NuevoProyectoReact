@@ -14,7 +14,7 @@ export const filterProductsByGenderAndCategory = (
   );
 };
 
-export const renderProductCategory = (gender, category) => {
+export function ProductCategory({ gender, category }) {
   const { state } = useContext(Store);
 
   const filteredProducts = filterProductsByGenderAndCategory(
@@ -23,20 +23,18 @@ export const renderProductCategory = (gender, category) => {
     state.products || []
   );
 
-  if (filteredProducts.length > 0) {
-    return (
-      <div key={`${gender}-${category}`}>
-        <h3 className={`text-center mt-5 mb-5 ${styles.indexTitle}`}>
-          {category}
-        </h3>
-        <div className="row row-cols-1 row-cols-md-2 g-4">
-          {filteredProducts.map((product) => (
-            <ProductItem key={product._id} product={product} />
-          ))}
-        </div>
+  if (filteredProducts.length === 0) return null;
+
+  return (
+    <div>
+      <h3 className={`text-center mt-5 mb-5 ${styles.indexTitle}`}>
+        {category}
+      </h3>
+      <div className="row row-cols-1 row-cols-md-2 g-4">
+        {filteredProducts.map((product) => (
+          <ProductItem key={product._id} product={product} />
+        ))}
       </div>
-    );
-  } else {
-    return null;
-  }
-};
+    </div>
+  );
+}

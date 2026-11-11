@@ -1,34 +1,70 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Power Sport
 
-## Getting Started
+Simulación de una tienda de indumentaria deportiva, armada como portfolio. No procesa pagos.
 
-First, run the development server:
+Al confirmar una compra, el backend envía un correo de confirmación por Brevo. El frontend repone el stock a propósito, para que los productos sigan disponibles y la tienda se pueda volver a probar.
+
+## Stack
+
+- Este repo: Next.js 14, React 18 y Bootstrap 5.
+- API: Express y MongoDB, en [ProyectoBackendServer](https://github.com/simondelasheras/ProyectoBackendServer).
+
+## Qué se puede hacer
+
+- Recorrer la home y el shop.
+- Ver un producto, elegir cantidad y agregarlo al carrito.
+- Quitar una unidad o el ítem entero.
+- Confirmar la compra con un email. El carrito queda vacío y el stock vuelve.
+
+Si un producto tiene `countInStock` en 0, el botón pasa a "Out of Stock".
+
+## Cómo ejecutarlo
+
+Hacen falta los dos repos y una base MongoDB local. Las dependencias de este repo se instalan con npm, usando `package-lock.json`.
+
+### 1. MongoDB
+
+Levantá un MongoDB en la máquina. La URI va en el backend, en la variable `CONNECTION_STRING`. El archivo de ejemplo del backend trae el nombre de las variables, sin claves.
+
+### 2. Backend
 
 ```bash
-npm run dev
-# or
-yarn dev
+git clone https://github.com/simondelasheras/ProyectoBackendServer
+cd ProyectoBackendServer
+cp .env.example .env
+npm install
+npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+En `.env` completá `CONNECTION_STRING`. Para que el correo salga, también `BREVO_SMTP_HOST`, `BREVO_SMTP_PORT`, `BREVO_SMTP_LOGIN`, `BREVO_SMTP_KEY` y `BREVO_FROM_EMAIL`. El remitente tiene que estar autorizado en Brevo. Si faltan usuario, clave o remitente, la compra responde 503 y no envía nada.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+El proceso abre tres puertos:
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+| Puerto | Recurso |
+| --- | --- |
+| 5050 | `/api/products` |
+| 8080 | `/api/carts` |
+| 9090 | `/api/buy` |
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+`PORT` puede listarlos juntos: `5050,8080,9090`.
 
-## Learn More
+### 3. Productos
 
-To learn more about Next.js, take a look at the following resources:
+`utils/db.json` es el catálogo de ejemplo. La tienda no lo lee: los productos salen de `GET /api/products`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Para cargarlo en la base del backend, insertá el arreglo `products` en la colección `products`. El campo numérico `id` no forma parte del modelo; se puede omitir. Mongoose asigna `_id`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### 4. Frontend
 
-## Deploy on Vercel
+```bash
+npm ci
+npm run dev
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Abrí http://localhost:3000. El backend solo acepta ese origen.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+![Home y shop de Power Sport](docs/tienda.png)
+
+## Pendiente para publicarla
+
+Hoy el frontend llama a `localhost` en los puertos 5050, 8080 y 9090. Para subirla haría falta hospedar el backend, una base MongoDB, las variables `CONNECTION_STRING` y `BREVO_*`, un remitente verificado en Brevo, CORS para el dominio del sitio y que el frontend use la URL pública del backend. `eslint-config-next` sigue en la versión 12, con Next 14. Nada de eso entra en este repo todavía.
