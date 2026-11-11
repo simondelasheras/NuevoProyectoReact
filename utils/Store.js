@@ -1,6 +1,7 @@
 
 import axios from "axios";
 import { createContext, useReducer, useEffect } from "react";
+import { clearPurchaseAttempt, resumeOpenPurchase } from "./purchaseAttempt";
 import { readPendingCart, settlePendingCart } from "./settleCart";
 
 export const Store = createContext();
@@ -179,8 +180,10 @@ export function StoreProvider({ children }) {
     let active = true;
 
     (async () => {
+      await resumeOpenPurchase();
       if (readPendingCart()) {
         const result = await settlePendingCart();
+        if (result.ok && result.emailSent) clearPurchaseAttempt();
         if (active && !result.ok) {
           dispatch({ type: "SETTLE_FAILED" });
         }

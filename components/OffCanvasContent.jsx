@@ -3,13 +3,19 @@ import { useState, useContext, useEffect, useLayoutEffect, useRef } from "react"
 import { Modal, Button } from "react-bootstrap";
 import { Store, getData } from "../utils/Store";
 import {
+  beginPurchase,
+  clearPurchaseAttempt,
+  messageForStatus,
+  readPurchaseAttempt,
+  submitPurchase,
+} from "../utils/purchaseAttempt";
+import {
   queueRelease,
   readPendingCart,
   rememberPendingCart,
   settlePendingCart,
 } from "../utils/settleCart";
 import styles from "../styles/OffCanvasContent.module.css";
-import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const OffcanvasContent = ({ offcanvasInstance }) => {
@@ -104,6 +110,7 @@ const OffcanvasContent = ({ offcanvasInstance }) => {
       if (hadPending && result.ok) {
         dispatch({ type: "SETTLE_OK" });
         if (result.emailSent) {
+          clearPurchaseAttempt();
           setError("");
           setPurchaseSuccess("Your purchase is confirmed.");
           setShowModal(true);
@@ -134,31 +141,34 @@ const OffcanvasContent = ({ offcanvasInstance }) => {
       return;
     }
 
-    if (!email) {
+    const saved = readPurchaseAttempt();
+    const items = saved
+      ? saved.products
+      : cart && Array.isArray(cart.cartItems)
+      ? cart.cartItems
+      : [];
+    const emailToSend = saved ? saved.email : email;
+
+    if (!emailToSend) {
       setError("Email is required");
       return;
     }
-
-    const items = cart && Array.isArray(cart.cartItems) ? cart.cartItems : [];
     if (items.length === 0) {
       setError("Your cart is empty.");
       return;
     }
 
+    const attempt = beginPurchase(emailToSend, items);
     setPurchasing(true);
-    try {
-      await axios.post("http://localhost:9090/api/buy", {
-        email,
-        products: items,
-      });
-      rememberPendingCart(items, true);
-    } catch (purchaseError) {
-      console.error("Error processing purchase:", purchaseError);
-      setError("We couldn't complete the purchase. Please try again.");
+    const result = await submitPurchase(attempt);
+    if (!result.ok) {
+      setPurchaseSuccess("");
+      setError(messageForStatus(result.status));
       setPurchasing(false);
       return;
     }
 
+    rememberPendingCart(attempt.products, true);
     setPurchasing(false);
     await retrySettle();
   };
@@ -186,9 +196,11 @@ const OffcanvasContent = ({ offcanvasInstance }) => {
   };
 
   const pendingPurchase = readPendingCart();
+  const savedAttempt = readPurchaseAttempt();
   const retryingSentPurchase = Boolean(
     pendingPurchase && pendingPurchase.emailSent && !purchaseSuccess
   );
+  const retryingSamePurchase = Boolean(savedAttempt && !purchaseSuccess && !retryingSentPurchase);
 
   return (
     <div
@@ -335,6 +347,8 @@ const OffcanvasContent = ({ offcanvasInstance }) => {
               ? "Purchase complete"
               : retryingSentPurchase
               ? "Purchase received"
+              : retryingSamePurchase
+              ? "Purchase pending"
               : "Confirm Purchase"}
           </Modal.Title>
           <button
@@ -348,6 +362,11 @@ const OffcanvasContent = ({ offcanvasInstance }) => {
             <p>{purchaseSuccess}</p>
           ) : retryingSentPurchase ? (
             <p>{error || "Your purchase is confirmed, but we couldn't update the cart."}</p>
+          ) : retryingSamePurchase ? (
+            <p>
+              {error ||
+                "This purchase is already started. Retry keeps the same confirmation."}
+            </p>
           ) : (
             <form>
               <div className="mb-3">
@@ -382,7 +401,7 @@ const OffcanvasContent = ({ offcanvasInstance }) => {
                 className={`btn btn-primary ${styles["btn-custom"]}`}
                 onClick={handleClose}
               >
-                {retryingSentPurchase ? "Close" : "Cancel"}
+                {retryingSentPurchase || retryingSamePurchase ? "Close" : "Cancel"}
               </Button>
               <Button
                 variant="primary"
@@ -390,7 +409,7 @@ const OffcanvasContent = ({ offcanvasInstance }) => {
                 className={styles["btn-confirm"]}
                 disabled={purchasing}
               >
-                {retryingSentPurchase ? "Retry" : "Confirm Purchase"}
+                {retryingSentPurchase || retryingSamePurchase ? "Retry" : "Confirm Purchase"}
               </Button>
             </>
           )}
