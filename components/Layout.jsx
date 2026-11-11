@@ -11,7 +11,7 @@ const OffcanvasContent = dynamic(() => import("./OffCanvasContent"), {
 
 export default function Layout({ title, children }) {
   const { state, dispatch } = useContext(Store);
-  const { cart, cartStatus } = state;
+  const { cart, cartStatus, purchaseMessage } = state;
 
   const [cartItemsCount, setCartItemsCount] = useState(0);
 
@@ -127,6 +127,11 @@ export default function Layout({ title, children }) {
           </div>
         </div>
       </nav>
+      {purchaseMessage ? (
+        <p role="alert" className="alert alert-warning text-center mb-0">
+          {purchaseMessage}
+        </p>
+      ) : null}
       <main>{children || null}</main>{" "}
       {/* Asegura que children sea siempre un valor válido */}
       <OffcanvasContent />

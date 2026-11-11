@@ -1,7 +1,7 @@
 
 import axios from "axios";
 import { createContext, useReducer, useEffect } from "react";
-import { clearPurchaseAttempt, resumeOpenPurchase } from "./purchaseAttempt";
+import { clearPurchaseAttempt, messageForStatus, resumeOpenPurchase } from "./purchaseAttempt";
 import { readPendingCart, settlePendingCart } from "./settleCart";
 
 export const Store = createContext();
@@ -11,6 +11,7 @@ const initialState = {
   cart: null,
   cartStatus: "loading",
   settleStatus: null,
+  purchaseMessage: null,
 };
 
 export const CART_LOAD_TIMEOUT_MS = 8000;
@@ -68,6 +69,12 @@ export const getData = async (dispatch) => {
 
 function reducer(state, action) {
   switch (action.type) {
+    case "PURCHASE_FAILED": {
+      return { ...state, purchaseMessage: action.payload };
+    }
+    case "PURCHASE_OK": {
+      return { ...state, purchaseMessage: null };
+    }
     case "SETTLE_FAILED": {
       return { ...state, settleStatus: "error" };
     }
@@ -180,7 +187,10 @@ export function StoreProvider({ children }) {
     let active = true;
 
     (async () => {
-      await resumeOpenPurchase();
+      const purchase = await resumeOpenPurchase();
+      if (active && purchase && purchase.ok === false) {
+        dispatch({ type: "PURCHASE_FAILED", payload: messageForStatus(purchase.status) });
+      }
       if (readPendingCart()) {
         const result = await settlePendingCart();
         if (result.ok && result.emailSent) clearPurchaseAttempt();

@@ -111,6 +111,7 @@ const OffcanvasContent = ({ offcanvasInstance }) => {
         dispatch({ type: "SETTLE_OK" });
         if (result.emailSent) {
           clearPurchaseAttempt();
+          dispatch({ type: "PURCHASE_OK" });
           setError("");
           setPurchaseSuccess("Your purchase is confirmed.");
           setShowModal(true);
