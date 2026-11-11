@@ -1,5 +1,5 @@
 
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { Modal, Button } from "react-bootstrap";
 import axios from "axios";
 import ProductDetails from "./ProductDetails";
@@ -16,26 +16,14 @@ export default function ProductItem({ product }) {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [selectedQuantity, setSelectedQuantity] = useState(1);
 
+  const stock = Number(product.countInStock);
+  const available = Number.isFinite(stock) && stock > 0 ? Math.floor(stock) : 0;
+  const isOutOfStock = available <= 0;
 
-const initialButtonState = product.inCart === 20;
-
-const [isOutOfStock, setIsOutOfStock] = useState(initialButtonState);
-
-
-useEffect(() => {
-  const updatedButtonState = product.inCart === 20;
-  setIsOutOfStock(updatedButtonState);
-}, [product.inCart]);
-
-const handleShow = () => {
-  
-  if (isOutOfStock) {
-    console.log("Out of Stock");
-    return;
-  }
-
-  setShowModal(true);
-};
+  const handleShow = () => {
+    if (isOutOfStock) return;
+    setShowModal(true);
+  };
 const handleClose = () => {
   setShowModal(false);
 
@@ -51,26 +39,24 @@ const handleClose = () => {
 
   const { cart, products } = state;
 
-  const addToCartHandler = (product) => {
-    if (!isNaN(selectedQuantity) && selectedQuantity > 0) {
-
-
-      setShowModal(false);
-      setShowConfirmationModal(true);
-    }
+  const addToCartHandler = () => {
+    if (isOutOfStock || !Number.isInteger(selectedQuantity) || selectedQuantity < 1) return;
+    if (selectedQuantity > available) return;
+    setShowModal(false);
+    setShowConfirmationModal(true);
   };
   const confirmPurchaseHandler = async () => {
     try {
       const productInStock = products.find((p) => p._id === product._id);
-      console.log("Current cart:", cart);
-      const existingCartItem = (cart && cart.cartItems ? cart.cartItems : []).find((p) => {
-        console.log("product._id:", product._id);
-        console.log("p._id:", p._id);
-        return p._id === product._id;
-      });
+      const existingCartItem = (cart && cart.cartItems ? cart.cartItems : []).find(
+        (p) => p._id === product._id
+      );
 
-      console.log("Existing Cart Item:", existingCartItem);
-      if (productInStock && productInStock.countInStock >= selectedQuantity) {
+      if (
+        productInStock &&
+        productInStock.countInStock >= selectedQuantity &&
+        selectedQuantity > 0
+      ) {
         if (existingCartItem) {
           
           await axios.patch(
@@ -88,8 +74,6 @@ const handleClose = () => {
             inCart: productInStock.inCart + selectedQuantity,
           });
         }
-        console.log("es esto");
-        console.log(`${product._id}`);
         await axios.patch(`http://localhost:5050/api/products/${product._id}`, {
           countInStock: productInStock.countInStock - selectedQuantity,
           inCart: productInStock.inCart + selectedQuantity,
@@ -97,10 +81,7 @@ const handleClose = () => {
 
 
         getData(dispatch);
-      } else {
-        console.log("Producto no disponible");
       }
-      console.log("Cart después de la operación:", cart);
     } catch (error) {
       console.error("Error adding to cart:", error);
     }
@@ -163,9 +144,9 @@ const handleClose = () => {
                   value={selectedQuantity}
                   onChange={handleQuantityChange}
                 >
-                  {[...Array(product.countInStock).keys()].map((x) => (
-                    <option key={x + 1} value={product.countInStock - x}>
-                      {product.countInStock - x}
+                  {[...Array(available).keys()].map((x) => (
+                    <option key={x + 1} value={available - x}>
+                      {available - x}
                     </option>
                   ))}
                 </select>
@@ -183,7 +164,7 @@ const handleClose = () => {
               {/* Invierte el orden de los botones */}
               <Button
                 variant="primary"
-                onClick={() => addToCartHandler(product)}
+                onClick={addToCartHandler}
                 className={styles["btn-add-to-cart"]}
               >
                 Add to Cart
