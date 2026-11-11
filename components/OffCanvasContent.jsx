@@ -3,6 +3,7 @@ import { useState, useContext, useEffect, useLayoutEffect, useRef } from "react"
 import { Modal, Button } from "react-bootstrap";
 import { Store, getData } from "../utils/Store";
 import {
+  queueRelease,
   readPendingCart,
   rememberPendingCart,
   settlePendingCart,
@@ -162,71 +163,19 @@ const OffcanvasContent = ({ offcanvasInstance }) => {
     await retrySettle();
   };
 
-  const removeFromCartHandler = async (_id) => {
+  const removeUnits = async (_id, units) => {
+    if (purchasing) return;
+    setPurchasing(true);
     try {
-      console.log(`Removing item with id: ${_id}`);
-      await axios.delete(`http://localhost:8080/api/carts/${_id}`);
-
-      dispatch({ type: "CART_REMOVE_ITEM", payload: { _id } });
-
-      const product = state.products.find((p) => p._id === _id);
-
-      if (!product) {
-        console.error(`Product with id ${_id} not found`);
-        return;
-      }
-
-      console.log("Product details:", product);
-
-      await axios.patch(`http://localhost:5050/api/products/${_id}`, {
-        countInStock: product.countInStock + product.inCart,
-        inCart: 0,
-      });
-      getData(dispatch);
+      await queueRelease(_id, units);
     } catch (error) {
       console.error("Error removing from cart:", error);
+      dispatch({ type: "SETTLE_FAILED" });
+      setPurchasing(false);
+      return;
     }
-  };
-
-  const removeOneFromCartHandler = async (_id) => {
-    try {
-      const product = state.products.find((p) => p._id === _id);
-
-      if (!product) {
-        console.error(`Product with id ${_id} not found`);
-        return;
-      }
-
-      console.log("Removing one item with id:", _id);
-      console.log("Product details:", product);
-
-      if (product.inCart > 1) {
-        await axios.patch(`http://localhost:8080/api/carts/${_id}`, {
-          countInStock: product.countInStock + 1,
-          inCart: product.inCart - 1,
-        });
-
-        dispatch({ type: "CART_REMOVE_ONE_ITEM", payload: { _id } });
-
-        await axios.patch(`http://localhost:5050/api/products/${_id}`, {
-          countInStock: product.countInStock + 1,
-          inCart: product.inCart - 1,
-        });
-
-        getData(dispatch);
-      } else {
-        await axios.delete(`http://localhost:8080/api/carts/${_id}`);
-        dispatch({ type: "CART_REMOVE_ITEM", payload: { _id } });
-        await axios.patch(`http://localhost:5050/api/products/${_id}`, {
-          countInStock: product.countInStock + 1,
-          inCart: 0,
-        });
-
-        getData(dispatch);
-      }
-    } catch (error) {
-      console.error("Error removing one from cart:", error);
-    }
+    setPurchasing(false);
+    await retrySettle();
   };
 
   const clearCartHandler = async () => {
@@ -325,13 +274,15 @@ const OffcanvasContent = ({ offcanvasInstance }) => {
                     <div className={styles["cart-item-actions"]}>
                       <button
                         className={`btn btn-outline-primary ${styles["btn-remove-one"]}`}
-                        onClick={() => removeOneFromCartHandler(item._id)}
+                        onClick={() => removeUnits(item._id, 1)}
+                        disabled={purchasing}
                       >
                         Remove One
                       </button>
                       <button
                         className={`btn btn-outline-primary ${styles["btn-remove-all"]}`}
-                        onClick={() => removeFromCartHandler(item._id)}
+                        onClick={() => removeUnits(item._id, "all")}
+                        disabled={purchasing}
                       >
                         Remove All
                       </button>
