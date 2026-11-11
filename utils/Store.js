@@ -1,6 +1,7 @@
 
 import axios from "axios";
 import { createContext, useReducer, useEffect } from "react";
+import { readPendingCart, settlePendingCart } from "./settleCart";
 
 export const Store = createContext();
 
@@ -8,6 +9,7 @@ const initialState = {
   products: [],
   cart: null,
   cartStatus: "loading",
+  settleStatus: null,
 };
 
 export const CART_LOAD_TIMEOUT_MS = 8000;
@@ -65,6 +67,12 @@ export const getData = async (dispatch) => {
 
 function reducer(state, action) {
   switch (action.type) {
+    case "SETTLE_FAILED": {
+      return { ...state, settleStatus: "error" };
+    }
+    case "SETTLE_OK": {
+      return { ...state, settleStatus: null };
+    }
     case "CART_LOAD_START": {
       return { ...state, cartStatus: "loading" };
     }
@@ -168,7 +176,21 @@ export function StoreProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
-    getData(dispatch);
+    let active = true;
+
+    (async () => {
+      if (readPendingCart()) {
+        const result = await settlePendingCart();
+        if (active && !result.ok) {
+          dispatch({ type: "SETTLE_FAILED" });
+        }
+      }
+      if (active) await getData(dispatch);
+    })();
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   const contextValue = { state, dispatch };

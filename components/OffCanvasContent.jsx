@@ -2,13 +2,18 @@
 import { useState, useContext, useEffect, useLayoutEffect, useRef } from "react";
 import { Modal, Button } from "react-bootstrap";
 import { Store, getData } from "../utils/Store";
+import {
+  readPendingCart,
+  rememberPendingCart,
+  settlePendingCart,
+} from "../utils/settleCart";
 import styles from "../styles/OffCanvasContent.module.css";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const OffcanvasContent = ({ offcanvasInstance }) => {
   const { state, dispatch } = useContext(Store);
-  const { cart, cartStatus } = state;
+  const { cart, cartStatus, settleStatus } = state;
   const [showModal, setShowModal] = useState(false);
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
@@ -87,13 +92,55 @@ const OffcanvasContent = ({ offcanvasInstance }) => {
     setPurchasing(false);
   };
 
+  const retrySettle = async () => {
+    setPurchasing(true);
+    try {
+      const hadPending = readPendingCart();
+      const result = hadPending
+        ? await settlePendingCart()
+        : { ok: true, emailSent: false };
+
+      if (hadPending && result.ok) {
+        dispatch({ type: "SETTLE_OK" });
+        if (result.emailSent) {
+          setError("");
+          setPurchaseSuccess("Your purchase is confirmed.");
+          setShowModal(true);
+        }
+      } else if (hadPending) {
+        dispatch({ type: "SETTLE_FAILED" });
+        setPurchaseSuccess("");
+        setError(
+          result.emailSent
+            ? "Your purchase is confirmed, but we couldn't update the cart."
+            : "We couldn't update the cart."
+        );
+        if (result.emailSent) setShowModal(true);
+      }
+
+      await getData(dispatch);
+    } finally {
+      setPurchasing(false);
+    }
+  };
+
   const handlePurchase = async () => {
-    if (purchasing || purchaseSuccess) {
+    if (purchasing || purchaseSuccess) return;
+
+    const pending = readPendingCart();
+    if (pending && pending.emailSent) {
+      await retrySettle();
       return;
     }
+
     if (!email) {
-      console.log("Email is required");
       setError("Email is required");
+      return;
+    }
+
+    const items = cart && Array.isArray(cart.cartItems) ? cart.cartItems : [];
+    if (items.length === 0) {
+      setError("Your cart is empty.");
       return;
     }
 
@@ -101,17 +148,18 @@ const OffcanvasContent = ({ offcanvasInstance }) => {
     try {
       await axios.post("http://localhost:9090/api/buy", {
         email,
-        products: cart.cartItems,
+        products: items,
       });
-      setError("");
-      setPurchaseSuccess("Your purchase is confirmed.");
-      clearCartHandler();
+      rememberPendingCart(items, true);
     } catch (purchaseError) {
       console.error("Error processing purchase:", purchaseError);
       setError("We couldn't complete the purchase. Please try again.");
-    } finally {
       setPurchasing(false);
+      return;
     }
+
+    setPurchasing(false);
+    await retrySettle();
   };
 
   const removeFromCartHandler = async (_id) => {
@@ -182,41 +230,16 @@ const OffcanvasContent = ({ offcanvasInstance }) => {
   };
 
   const clearCartHandler = async () => {
-    try {
-      const cartItemIds = state.cart.cartItems.map((item) => item._id);
-
-      for (const _id of cartItemIds) {
-        try {
-          await axios.delete(`http://localhost:8080/api/carts/${_id}`);
-        } catch (error) {
-          console.error(`Error deleting item with ID ${_id}:`, error);
-        }
-      }
-
-      dispatch({ type: "CART_CLEAR" });
-
-      for (const item of state.cart.cartItems) {
-        try {
-          const product = state.products.find((p) => p._id === item._id);
-          await axios.patch(`http://localhost:5050/api/products/${item._id}`, {
-            countInStock: product.countInStock + item.inCart,
-            inCart: 0,
-          });
-        } catch (error) {
-          console.error(
-            `Error updating stock for item with ID ${item._id}:`,
-            error
-          );
-        }
-      }
-
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      getData(dispatch);
-    } catch (error) {
-      console.error("Error removing from cart:", error);
-    }
+    const items = cart && Array.isArray(cart.cartItems) ? cart.cartItems : [];
+    if (items.length === 0) return;
+    rememberPendingCart(items, false);
+    await retrySettle();
   };
+
+  const pendingPurchase = readPendingCart();
+  const retryingSentPurchase = Boolean(
+    pendingPurchase && pendingPurchase.emailSent && !purchaseSuccess
+  );
 
   return (
     <div
@@ -242,13 +265,31 @@ const OffcanvasContent = ({ offcanvasInstance }) => {
       </div>
       <div className={`offcanvas-body ${styles["cart-content"]}`}>
         <h6 className={styles["cart-content-title"]}>In Cart:</h6>
+        {settleStatus === "error" && (
+          <div className={styles.cartEmptyMessage} role="alert">
+            <p>
+              {pendingPurchase && pendingPurchase.emailSent
+                ? "Your purchase is confirmed, but we couldn't update the cart."
+                : "We couldn't update the cart."}
+            </p>
+            <button
+              type="button"
+              className="btn btn-outline-primary"
+              onClick={retrySettle}
+              disabled={purchasing}
+            >
+              Retry
+            </button>
+          </div>
+        )}
         {cartStatus === "error" ? (
           <div className={styles.cartEmptyMessage} role="alert">
             <p>We couldn&apos;t load the cart</p>
             <button
               type="button"
               className="btn btn-outline-primary"
-              onClick={() => getData(dispatch)}
+              onClick={retrySettle}
+              disabled={purchasing}
             >
               Retry
             </button>
@@ -321,10 +362,8 @@ const OffcanvasContent = ({ offcanvasInstance }) => {
             </button>
             <button
               className={`btn btn-primary ${styles["btn-clear-cart"]}`}
-              onClick={() => {
-                console.log("Botón Clear Cart presionado");
-                clearCartHandler();
-              }}
+              onClick={clearCartHandler}
+              disabled={purchasing}
             >
               Clear Cart
             </button>
@@ -341,7 +380,11 @@ const OffcanvasContent = ({ offcanvasInstance }) => {
       >
         <Modal.Header className={styles.customSection}>
           <Modal.Title>
-            {purchaseSuccess ? "Purchase complete" : "Confirm Purchase"}
+            {purchaseSuccess
+              ? "Purchase complete"
+              : retryingSentPurchase
+              ? "Purchase received"
+              : "Confirm Purchase"}
           </Modal.Title>
           <button
             type="button"
@@ -352,6 +395,8 @@ const OffcanvasContent = ({ offcanvasInstance }) => {
         <Modal.Body className={styles.customSection}>
           {purchaseSuccess ? (
             <p>{purchaseSuccess}</p>
+          ) : retryingSentPurchase ? (
+            <p>{error || "Your purchase is confirmed, but we couldn't update the cart."}</p>
           ) : (
             <form>
               <div className="mb-3">
@@ -386,7 +431,7 @@ const OffcanvasContent = ({ offcanvasInstance }) => {
                 className={`btn btn-primary ${styles["btn-custom"]}`}
                 onClick={handleClose}
               >
-                Cancel
+                {retryingSentPurchase ? "Close" : "Cancel"}
               </Button>
               <Button
                 variant="primary"
@@ -394,7 +439,7 @@ const OffcanvasContent = ({ offcanvasInstance }) => {
                 className={styles["btn-confirm"]}
                 disabled={purchasing}
               >
-                Confirm Purchase
+                {retryingSentPurchase ? "Retry" : "Confirm Purchase"}
               </Button>
             </>
           )}
