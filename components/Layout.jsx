@@ -104,7 +104,7 @@ export default function Layout({ title, children }) {
                   {cartStatus === "error" ? (
                     <span
                       className="text-dark bg-warning rounded p-1"
-                      aria-label="No pudimos cargar el carrito"
+                      aria-label="We couldn't load the cart"
                     >
                       !
                     </span>
@@ -116,7 +116,7 @@ export default function Layout({ title, children }) {
                     <span
                       className="text-white bg-secondary rounded p-1"
                       aria-busy="true"
-                      aria-label="Cargando carrito"
+                      aria-label="Loading cart"
                     >
                       ...
                     </span>

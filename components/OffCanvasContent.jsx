@@ -99,22 +99,16 @@ const OffcanvasContent = ({ offcanvasInstance }) => {
 
     setPurchasing(true);
     try {
-      console.log("Sending purchase request...");
-      const { data } = await axios.post("http://localhost:9090/api/buy", {
+      await axios.post("http://localhost:9090/api/buy", {
         email,
         products: cart.cartItems,
       });
-      console.log("Purchase request successful!");
       setError("");
-      setPurchaseSuccess(
-        data && data.message
-          ? data.message
-          : "Correo electrónico de confirmación enviado correctamente"
-      );
+      setPurchaseSuccess("Your purchase is confirmed.");
       clearCartHandler();
     } catch (purchaseError) {
       console.error("Error processing purchase:", purchaseError);
-      setError("Error processing purchase");
+      setError("We couldn't complete the purchase. Please try again.");
     } finally {
       setPurchasing(false);
     }
@@ -250,19 +244,19 @@ const OffcanvasContent = ({ offcanvasInstance }) => {
         <h6 className={styles["cart-content-title"]}>In Cart:</h6>
         {cartStatus === "error" ? (
           <div className={styles.cartEmptyMessage} role="alert">
-            <p>No pudimos cargar el carrito</p>
+            <p>We couldn&apos;t load the cart</p>
             <button
               type="button"
               className="btn btn-outline-primary"
               onClick={() => getData(dispatch)}
             >
-              Reintentar
+              Retry
             </button>
           </div>
         ) : cartStatus === "loading" &&
           !(cart && cart.cartItems && cart.cartItems.length > 0) ? (
           <div className={styles.cartEmptyMessage} aria-busy="true">
-            Cargando carrito...
+            Loading cart...
           </div>
         ) : cart && cart.cartItems && cart.cartItems.length > 0 ? (
           <ul className={styles["cart-items-list"]}>
