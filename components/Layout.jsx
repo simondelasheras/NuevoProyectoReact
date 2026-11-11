@@ -33,9 +33,11 @@ export default function Layout({ title, children }) {
       }
 
       if (typeof window !== "undefined" && window.bootstrap) {
-        const offcanvas = new window.bootstrap.Offcanvas(
-          document.getElementById("offcanvasRight")
-        );
+        const element = document.getElementById("offcanvasRight");
+        if (!element) {
+          return;
+        }
+        const offcanvas = window.bootstrap.Offcanvas.getOrCreateInstance(element);
         offcanvas.show();
       }
     } catch (error) {

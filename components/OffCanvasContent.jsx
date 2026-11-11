@@ -1,5 +1,5 @@
 
-import { useState, useContext, useEffect, useRef } from "react";
+import { useState, useContext, useEffect, useLayoutEffect, useRef } from "react";
 import { Modal, Button } from "react-bootstrap";
 import { Store } from "../utils/Store";
 import styles from "../styles/OffCanvasContent.module.css";
@@ -29,63 +29,113 @@ const OffcanvasContent = ({ offcanvasInstance }) => {
   const [showModal, setShowModal] = useState(false);
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
-  const [offcanvasOpen, setOffcanvasOpen] = useState(false);
+  const [purchaseSuccess, setPurchaseSuccess] = useState("");
+  const [purchasing, setPurchasing] = useState(false);
 
   const emailInputRef = useRef(null);
   const offcanvasRef = useRef(null);
+  // Bootstrap marca el panel como abierto en el DOM. El flag evita que un
+  // render de React le saque la clase "show" y deje el fondo oscuro colgado.
+  const offcanvasVisibleRef = useRef(false);
 
   useEffect(() => {
-    if (showModal) {
-      emailInputRef.current.focus();
-      if (offcanvasRef.current) {
-        offcanvasRef.current.classList.remove("show");
-      }
+    const element = offcanvasRef.current;
+    if (!element) {
+      return undefined;
     }
-  }, [showModal]);
+
+    const onShow = () => {
+      offcanvasVisibleRef.current = true;
+    };
+    const onHide = () => {
+      offcanvasVisibleRef.current = false;
+    };
+
+    element.addEventListener("show.bs.offcanvas", onShow);
+    element.addEventListener("hide.bs.offcanvas", onHide);
+
+    return () => {
+      element.removeEventListener("show.bs.offcanvas", onShow);
+      element.removeEventListener("hide.bs.offcanvas", onHide);
+    };
+  }, []);
+
+  useLayoutEffect(() => {
+    const element = offcanvasRef.current;
+    if (element && offcanvasVisibleRef.current) {
+      element.classList.add("show");
+    }
+  });
+
+  useEffect(() => {
+    if (showModal && !purchaseSuccess && emailInputRef.current) {
+      emailInputRef.current.focus();
+    }
+  }, [showModal, purchaseSuccess]);
+
+  // Cierra el panel con la API de Bootstrap para que retire su propio
+  // fondo oscuro (offcanvas-backdrop), el bloqueo de scroll y el foco.
+  // Abre el modal recién cuando Bootstrap terminó de cerrar el panel, para que
+  // el modal no guarde como "estado original" el body con el scroll bloqueado.
+  const hideOffcanvasThen = (callback) => {
+    const element = offcanvasRef.current;
+    if (typeof window === "undefined" || !window.bootstrap || !element) {
+      callback();
+      return;
+    }
+    const instance = window.bootstrap.Offcanvas.getInstance(element);
+    if (!instance || !element.classList.contains("show")) {
+      callback();
+      return;
+    }
+    element.addEventListener("hidden.bs.offcanvas", callback, { once: true });
+    instance.hide();
+  };
 
   const handleBuyClick = () => {
-    setShowModal(true);
-    setOffcanvasOpen(false);
+    hideOffcanvasThen(() => setShowModal(true));
   };
 
   const handleClose = () => {
     setShowModal(false);
     setEmail("");
     setError("");
-    setOffcanvasOpen(false);
+    setPurchaseSuccess("");
+    setPurchasing(false);
   };
 
-  useEffect(() => {
-    if (offcanvasRef.current) {
-      if (offcanvasOpen) {
-        offcanvasRef.current.classList.add("show");
-      } else {
-        offcanvasRef.current.classList.remove("show");
-      }
+  const handlePurchase = async () => {
+    if (purchasing || purchaseSuccess) {
+      return;
     }
-  }, [offcanvasOpen]);
+    if (!email) {
+      console.log("Email is required");
+      setError("Email is required");
+      return;
+    }
 
-const handlePurchase = async () => {
-  if (!email) {
-    console.log("Email is required");
-    setError("Email is required");
-    return;
-  }
-
-  try {
-    console.log("Sending purchase request...");
-    await axios.post("http://localhost:9090/api/buy", {
-      email,
-      products: cart.cartItems,
-    });
-    console.log("Purchase request successful!");
-    clearCartHandler();
-    handleClose();
-  } catch (error) {
-    console.error("Error processing purchase:", error);
-    setError("Error processing purchase");
-  }
-};
+    setPurchasing(true);
+    try {
+      console.log("Sending purchase request...");
+      const { data } = await axios.post("http://localhost:9090/api/buy", {
+        email,
+        products: cart.cartItems,
+      });
+      console.log("Purchase request successful!");
+      setError("");
+      setPurchaseSuccess(
+        data && data.message
+          ? data.message
+          : "Correo electrónico de confirmación enviado correctamente"
+      );
+      clearCartHandler();
+    } catch (purchaseError) {
+      console.error("Error processing purchase:", purchaseError);
+      setError("Error processing purchase");
+    } finally {
+      setPurchasing(false);
+    }
+  };
 
   const removeFromCartHandler = async (_id) => {
     try {
@@ -194,7 +244,7 @@ const handlePurchase = async () => {
   return (
     <div
       ref={offcanvasRef}
-      className={`offcanvas offcanvas-end ${offcanvasOpen ? "show" : ""}`}
+      className="offcanvas offcanvas-end"
       tabIndex="-1"
       id="offcanvasRight"
       aria-labelledby="offcanvasRightLabel"
@@ -297,7 +347,9 @@ const handlePurchase = async () => {
         className={styles.modalCustom} // Aplica la clase modal-custom al modal
       >
         <Modal.Header className={styles.customSection}>
-          <Modal.Title>Confirm Purchase</Modal.Title>
+          <Modal.Title>
+            {purchaseSuccess ? "Purchase complete" : "Confirm Purchase"}
+          </Modal.Title>
           <button
             type="button"
             className={styles.newButton}
@@ -305,38 +357,54 @@ const handlePurchase = async () => {
           ></button>
         </Modal.Header>
         <Modal.Body className={styles.customSection}>
-          <form>
-            <div className="mb-3">
-              <label htmlFor="email" className="form-label">
-                Email address
-              </label>
-              <input
-                ref={emailInputRef} // Establecer la referencia al input del email
-                type="email"
-                className="form-control"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            {error && <p className="text-danger">{error}</p>}
-          </form>
+          {purchaseSuccess ? (
+            <p>{purchaseSuccess}</p>
+          ) : (
+            <form>
+              <div className="mb-3">
+                <label htmlFor="email" className="form-label">
+                  Email address
+                </label>
+                <input
+                  ref={emailInputRef}
+                  type="email"
+                  className="form-control"
+                  id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              {error && <p className="text-danger">{error}</p>}
+            </form>
+          )}
         </Modal.Body>
         <Modal.Footer className={styles.customPlusSection}>
-          <Button
-            className={`btn btn-primary ${styles["btn-custom"]}`}
-            onClick={handleClose}
-          >
-            Cancel
-          </Button>
-          <Button
-            variant="primary"
-            onClick={handlePurchase}
-            className={styles["btn-confirm"]}
-          >
-            Confirm Purchase
-          </Button>
+          {purchaseSuccess ? (
+            <Button
+              className={`btn btn-primary ${styles["btn-custom"]}`}
+              onClick={handleClose}
+            >
+              Close
+            </Button>
+          ) : (
+            <>
+              <Button
+                className={`btn btn-primary ${styles["btn-custom"]}`}
+                onClick={handleClose}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="primary"
+                onClick={handlePurchase}
+                className={styles["btn-confirm"]}
+                disabled={purchasing}
+              >
+                Confirm Purchase
+              </Button>
+            </>
+          )}
         </Modal.Footer>
       </Modal>
     </div>

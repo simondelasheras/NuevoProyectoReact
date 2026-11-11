@@ -226,14 +226,14 @@ const handleClose = () => {
             </Modal.Footer>
           </Modal>
 
-          {/* Modal de confirmación de compra */}
+          {/* Modal de confirmación de agregado al carrito */}
           <Modal show={showConfirmationModal} centered>
             <Modal.Header className={styles.customSection}>
-              <Modal.Title>Confirm Purchase</Modal.Title>
+              <Modal.Title>Add to cart</Modal.Title>
             </Modal.Header>
             <Modal.Body className={styles.customSection}>
               <p>
-                {`Do you want to confirm the purchase of: `}
+                {`Do you want to add to your cart: `}
                 <strong className={styles.quantityFrame}>
                   ({selectedQuantity}) {product.name}
                 </strong>
