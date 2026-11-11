@@ -63,8 +63,31 @@ npm run dev
 
 Abrí http://localhost:3000. El backend solo acepta ese origen.
 
+Las llamadas usan estas variables. Si no están definidas, quedan en localhost. No llevan barra final.
+
+| Variable | Por defecto | Recurso |
+| --- | --- | --- |
+| `NEXT_PUBLIC_PRODUCTS_URL` | `http://localhost:5050` | `/api/products` |
+| `NEXT_PUBLIC_CARTS_URL` | `http://localhost:8080` | `/api/carts` |
+| `NEXT_PUBLIC_BUY_URL` | `http://localhost:9090` | `/api/buy` |
+
+Los nombres están en `.env.example`, con esos mismos valores locales. Para apuntar a otro origen, copialos a `.env.local`. Next.js incorpora `NEXT_PUBLIC_*` al construir: después de cambiarlas hay que volver a correr `npm run dev` o `npm run build`.
+
+`npm run lint` revisa el código y `npm run build` lo compila. Este repo no tiene un script `test`. Esos dos comandos no ejecutan pruebas de la tienda.
+
 ![Home y shop de Power Sport](docs/tienda.png)
 
 ## Pendiente para publicarla
 
-Hoy el frontend llama a `localhost` en los puertos 5050, 8080 y 9090. Para subirla haría falta hospedar el backend, una base MongoDB, las variables `CONNECTION_STRING` y `BREVO_*`, un remitente verificado en Brevo, CORS para el dominio del sitio y que el frontend use la URL pública del backend. `eslint-config-next` sigue en la versión 12, con Next 14. Nada de eso entra en este repo todavía.
+Las URLs ya no están fijas en el código. Para salir de localhost todavía falta decidir el hosting. Este sitio es Next.js y se sirve con `next start`. El backend es otro proceso, con tres puertos. No hay un proveedor elegido.
+
+Además:
+
+- MongoDB y las variables `CONNECTION_STRING` y `BREVO_*` del backend, con un remitente verificado en Brevo.
+- El CORS del backend solo permite `http://localhost:3000`. Hay que abrirlo al origen público del sitio.
+- Definir `NEXT_PUBLIC_PRODUCTS_URL`, `NEXT_PUBLIC_CARTS_URL` y `NEXT_PUBLIC_BUY_URL` en el build del frontend, con el origen público de cada servicio.
+- `npm audit` del 11 de noviembre de 2026 reporta 17 avisos: 2 críticos, 11 altos y 4 moderados. Los críticos están en `next` y en `form-data`. Corregirlos implica subir Next y otras dependencias, con salto de versión y riesgo de romper el build. Queda pendiente.
+- `eslint` está en 8.20.0 y `eslint-config-next` en 12.2.2, con Next 14.0.2. Alinear el config con Next 14 puede cambiar las reglas de lint. Queda pendiente.
+- Varias imágenes viven en Imgur. Si esos enlaces dejan de responder, la tienda se ve rota. Pasarlas al repo sería un cambio aparte.
+
+La reposición del stock después de comprar sigue siendo a propósito, para poder repetir la prueba.

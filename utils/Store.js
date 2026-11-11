@@ -1,6 +1,7 @@
 
 import axios from "axios";
 import { createContext, useReducer, useEffect } from "react";
+import { cartsUrl, productsUrl } from "./api";
 import { clearPurchaseAttempt, messageForStatus, resumeOpenPurchase } from "./purchaseAttempt";
 import { readPendingCart, settlePendingCart } from "./settleCart";
 
@@ -26,7 +27,7 @@ export const getData = async (dispatch) => {
   dispatch({ type: "CART_LOAD_START" });
 
   const productsPromise = axios
-    .get("http://localhost:5050/api/products", { timeout: CART_LOAD_TIMEOUT_MS })
+    .get(productsUrl, { timeout: CART_LOAD_TIMEOUT_MS })
     .then((res) => {
       if (!isCurrent() || !Array.isArray(res.data)) {
         return null;
@@ -40,7 +41,7 @@ export const getData = async (dispatch) => {
     });
 
   const cartPromise = axios
-    .get("http://localhost:8080/api/carts", { timeout: CART_LOAD_TIMEOUT_MS })
+    .get(cartsUrl, { timeout: CART_LOAD_TIMEOUT_MS })
     .then((res) => (Array.isArray(res.data) ? res.data : []))
     .catch((error) => {
       console.error("Error updating state:", error);

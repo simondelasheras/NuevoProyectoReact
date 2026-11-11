@@ -7,6 +7,7 @@ const informacionContacto = [
   {
     imgSrc: "https://imgur.com/WVgU2bW.jpg",
     texto: "powersport.ok@gmail.com",
+    clase: styles.footerEmail,
   },
 ];
 
@@ -51,16 +52,7 @@ function Footer() {
           {informacionContacto.map((info, index) => (
             <div key={index}>
               <img src={info.imgSrc} alt={info.texto} />
-              {/* Aplicar la clase solo al texto del correo electrónico */}
-              <p
-                className={
-                  info.texto === "powersport.ok@gmail.com"
-                    ? styles.footerEmail
-                    : ""
-                }
-              >
-                {info.texto}
-              </p>
+              <p className={info.clase || ""}>{info.texto}</p>
             </div>
           ))}
         </div>

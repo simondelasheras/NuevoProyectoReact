@@ -10,11 +10,10 @@ export default function ProductDetails({ product }) {
         <div
           className={`col-md-4 d-flex align-items-center ${styles["product-image"]}`}
         >
-          {/* Aplica el nuevo estilo a la imagen */}
           <img
             src={product.image}
-            className={`img-fluid rounded-start`}
-            alt="..."
+            className="img-fluid rounded-start"
+            alt={product.name}
           />
         </div>
         <div className="col-md-8">
@@ -25,7 +24,6 @@ export default function ProductDetails({ product }) {
             <p className="card-title">Category: {product.category}</p>
             <p className="card-text">Gender: {product.gender}</p>
             <p>{product.countInStock > 0 ? "In stock" : "Unavailable"}</p>
-            {/* Agrega más detalles según tus necesidades */}
           </div>
         </div>
       </div>

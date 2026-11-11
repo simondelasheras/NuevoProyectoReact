@@ -1,8 +1,8 @@
 import axios from "axios";
+import { buyUrl } from "./api";
 import { readPendingCart, rememberPendingCart } from "./settleCart";
 
 const STORAGE_KEY = "powersport-purchase-id";
-const BUY_URL = "http://localhost:9090/api/buy";
 const REQUEST_TIMEOUT_MS = 60000;
 
 function storage() {
@@ -57,7 +57,7 @@ function messageForStatus(status) {
 async function postOnce(attempt) {
   try {
     await axios.post(
-      BUY_URL,
+      buyUrl,
       {
         email: attempt.email,
         products: attempt.products,

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { cartsUrl, productsUrl } from "./api";
 
 const PENDING_KEY = "powersport-pending-cart";
 const TIMEOUT_MS = 8000;
@@ -89,8 +90,8 @@ export async function queueRelease(id, units) {
 
   try {
     const [productsResponse, cartsResponse] = await Promise.all([
-      axios.get("http://localhost:5050/api/products", { timeout: TIMEOUT_MS }),
-      axios.get("http://localhost:8080/api/carts", { timeout: TIMEOUT_MS }),
+      axios.get(productsUrl, { timeout: TIMEOUT_MS }),
+      axios.get(cartsUrl, { timeout: TIMEOUT_MS }),
     ]);
     if (!Array.isArray(productsResponse.data) || !Array.isArray(cartsResponse.data)) {
       throw new Error("unexpected catalog");
@@ -152,7 +153,7 @@ async function restoreProduct(product) {
   const allocated = Number(product.inCart) || 0;
   if (allocated <= 0) return;
   await axios.patch(
-    `http://localhost:5050/api/products/${product._id}`,
+    `${productsUrl}/${product._id}`,
     {
       countInStock: (Number(product.countInStock) || 0) + allocated,
       inCart: 0,
@@ -163,7 +164,7 @@ async function restoreProduct(product) {
 
 async function deleteCartItem(id) {
   try {
-    await axios.delete(`http://localhost:8080/api/carts/${id}`, {
+    await axios.delete(`${cartsUrl}/${id}`, {
       timeout: TIMEOUT_MS,
     });
   } catch (error) {
@@ -172,7 +173,7 @@ async function deleteCartItem(id) {
 }
 
 async function resolveUnits(item, products) {
-  const response = await axios.get("http://localhost:8080/api/carts", {
+  const response = await axios.get(cartsUrl, {
     timeout: TIMEOUT_MS,
   });
   const carts = Array.isArray(response.data) ? response.data : [];
@@ -198,7 +199,7 @@ async function resolveUnits(item, products) {
 
 async function applyUnits(item) {
   await axios.patch(
-    `http://localhost:5050/api/products/${item._id}`,
+    `${productsUrl}/${item._id}`,
     {
       countInStock: item.targetCountInStock,
       inCart: item.targetProductInCart,
@@ -213,7 +214,7 @@ async function applyUnits(item) {
 
   try {
     await axios.patch(
-      `http://localhost:8080/api/carts/${item._id}`,
+      `${cartsUrl}/${item._id}`,
       {
         countInStock: item.targetCountInStock,
         inCart: item.targetCartInCart,
@@ -233,7 +234,7 @@ async function settleNow() {
 
   let products;
   try {
-    const response = await axios.get("http://localhost:5050/api/products", {
+    const response = await axios.get(productsUrl, {
       timeout: TIMEOUT_MS,
     });
     if (!Array.isArray(response.data)) {

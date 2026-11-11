@@ -1,4 +1,3 @@
-// carousels/Bootstrap.js
 import { useState } from "react";
 import { Carousel } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -6,35 +5,35 @@ import styles from "../styles/Carousel.module.css";
 
 export default function BootstrapCarousel() {
   const [index, setIndex] = useState(0);
-  const handleSelect = (selectedIndex, e) => {
+  const handleSelect = (selectedIndex) => {
     setIndex(selectedIndex);
   };
 
   return (
     <Carousel activeIndex={index} onSelect={handleSelect}>
       <Carousel.Item interval={4000}>
-        <img src="https://imgur.com/cPJIKwy.jpg" alt="slide1" />
+        <img src="https://imgur.com/cPJIKwy.jpg" alt="Welcome to Power Sport" />
         <Carousel.Caption>
           <h3 className={styles.carouselTitle}>WELCOME TO POWER SPORT</h3>
           <p className={styles.carouselBody}>Online Store</p>
         </Carousel.Caption>
       </Carousel.Item>
       <Carousel.Item interval={4000}>
-        <img src="https://imgur.com/t1ChsJm.jpg" alt="slide2" />
+        <img src="https://imgur.com/t1ChsJm.jpg" alt="Men's sportswear" />
         <Carousel.Caption>
           <h3 className={styles.carouselTitle}>FIND ALL KINDS OF SPORTSWEAR</h3>
           <p className={styles.carouselBody}>Men</p>
         </Carousel.Caption>
       </Carousel.Item>
       <Carousel.Item interval={4000}>
-        <img src="https://imgur.com/m3vMdLx.jpg" alt="slide3" />
+        <img src="https://imgur.com/m3vMdLx.jpg" alt="Women's sportswear" />
         <Carousel.Caption>
           <h3 className={styles.carouselTitle}>FOR ALL GENDERS</h3>
           <p className={styles.carouselBody}>Women</p>
         </Carousel.Caption>
       </Carousel.Item>
       <Carousel.Item interval={4000}>
-        <img src="https://imgur.com/DQJ4Kpk.jpg" alt="slide4" />
+        <img src="https://imgur.com/DQJ4Kpk.jpg" alt="Footwear" />
         <Carousel.Caption>
           <h3 className={styles.carouselTitle}>
             WE HAVE ALL TYPES OF FOOTWEAR FOR EVERY OCCASION
