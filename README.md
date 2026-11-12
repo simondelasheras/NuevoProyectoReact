@@ -2,11 +2,11 @@
 
 Simulación de una tienda de indumentaria deportiva, armada como portfolio. No procesa pagos.
 
-Al confirmar una compra, el backend envía un correo de confirmación por Brevo. El frontend repone el stock a propósito, para que los productos sigan disponibles y la tienda se pueda volver a probar.
+Al confirmar una compra, el frontend vacía el carrito y repone el stock a propósito, para poder repetir la prueba. El correo de confirmación lo envía el backend solo si tiene SMTP configurado. Más abajo está el detalle, y el resto está en el README del backend.
 
 ## Stack
 
-- Este repo: Next.js 14, React 18 y Bootstrap 5.
+- Este repo: Next.js 14.0.2 (fijado en `package-lock.json`), React 18.2.0 y Bootstrap 5.
 - API: Express y MongoDB, en [ProyectoBackendServer](https://github.com/simondelasheras/ProyectoBackendServer).
 
 ## Qué se puede hacer
@@ -14,31 +14,37 @@ Al confirmar una compra, el backend envía un correo de confirmación por Brevo.
 - Recorrer la home y el shop.
 - Ver un producto, elegir cantidad y agregarlo al carrito.
 - Quitar una unidad o el ítem entero.
-- Confirmar la compra con un email. El carrito queda vacío y el stock vuelve.
+- Confirmar la compra con un email. Si el backend acepta el envío, el carrito queda vacío y el stock vuelve.
 
 Si un producto tiene `countInStock` en 0, el botón pasa a "Out of Stock".
 
-## Cómo ejecutarlo
+## Requisitos
 
-Hacen falta los dos repos y una base MongoDB local. Las dependencias de este repo se instalan con npm, usando `package-lock.json`.
+- Node.js 18.17.0 o posterior. Es el `engines.node` de `next@14.0.2`.
+- npm 9 o posterior, el que trae esa línea de Node. `package-lock.json` usa `lockfileVersion` 3 y se instala con `npm ci`.
+- Los dos repos clonados. El backend necesita MongoDB en marcha. Los requisitos y el arranque del servidor están en el [README del backend](https://github.com/simondelasheras/ProyectoBackendServer/blob/dev/README.md).
 
-### 1. MongoDB
+## Carpetas
 
-Levantá un MongoDB en la máquina. La URI va en el backend, en la variable `CONNECTION_STRING`. El archivo de ejemplo del backend trae el nombre de las variables, sin claves.
-
-### 2. Backend
+Cada bloque indica la carpeta. Los comandos del frontend se corren en `NuevoProyectoReact`. Los del backend, en `ProyectoBackendServer`.
 
 ```bash
+git clone https://github.com/simondelasheras/NuevoProyectoReact
 git clone https://github.com/simondelasheras/ProyectoBackendServer
+```
+
+## 1. Backend
+
+El backend tiene que estar corriendo antes que la tienda. En `ProyectoBackendServer`, los comandos de arranque del README del backend son:
+
+```bash
 cd ProyectoBackendServer
 cp .env.example .env
 npm install
 npm start
 ```
 
-En `.env` completá `CONNECTION_STRING`. Para que el correo salga, también `BREVO_SMTP_HOST`, `BREVO_SMTP_PORT`, `BREVO_SMTP_LOGIN`, `BREVO_SMTP_KEY` y `BREVO_FROM_EMAIL`. El remitente tiene que estar autorizado en Brevo. Si faltan usuario, clave o remitente, la compra responde 503 y no envía nada.
-
-El proceso abre tres puertos:
+`npm start` ejecuta `node app.js`. El proceso espera a MongoDB antes de escuchar. En `.env.example`, `PORT=5050`: productos quedan en ese puerto y, como no se indican los otros dos, carritos quedan en 8080 y compra en 9090.
 
 | Puerto | Recurso |
 | --- | --- |
@@ -46,24 +52,70 @@ El proceso abre tres puertos:
 | 8080 | `/api/carts` |
 | 9090 | `/api/buy` |
 
-`PORT` puede listarlos juntos: `5050,8080,9090`.
+Dejá esa terminal abierta. Este repo no levanta esos servicios. Si `PORT` se deja vacío, el backend usa los mismos tres puertos.
 
-### 3. Productos
+En el `.env` del backend, `CONNECTION_STRING` es la URI de MongoDB. `CORS_ORIGINS` vacío vale `http://localhost:3000`. Abrí la tienda en http://localhost:3000. `http://127.0.0.1:3000` es otro origen: el navegador bloquea las llamadas a la API. Para usarlo, poné ese origen en `CORS_ORIGINS` y reiniciá el backend.
 
-`utils/db.json` es el catálogo de ejemplo. La tienda no lo lee: los productos salen de `GET /api/products`.
+El correo usa las variables `BREVO_*` de ese mismo README. Si faltan usuario, clave o remitente, `POST /api/buy` responde 503 y no envía nada. El host por defecto es `smtp-relay.brevo.com` y el puerto por defecto es 587. Este frontend no simula una bandeja.
 
-Para cargarlo en la base del backend, insertá el arreglo `products` en la colección `products`. El campo numérico `id` no forma parte del modelo; se puede omitir. Mongoose asigna `_id`.
+## 2. Productos
 
-### 4. Frontend
+La tienda no lee `utils/db.json`. El listado sale de `GET /api/products` en el backend.
+
+Ese archivo es el catálogo de ejemplo: 24 productos. Cargalo con el backend ya escuchando, desde `NuevoProyectoReact`:
 
 ```bash
-npm ci
-npm run dev
+cd NuevoProyectoReact
+node <<'EOF'
+const fs = require("fs");
+const http = require("http");
+
+const { products } = JSON.parse(fs.readFileSync("utils/db.json", "utf8"));
+
+function post(body) {
+  const payload = JSON.stringify(body);
+  return new Promise((resolve, reject) => {
+    const req = http.request(
+      "http://localhost:5050/api/products",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Content-Length": Buffer.byteLength(payload),
+        },
+      },
+      (res) => {
+        res.resume();
+        res.on("end", () => resolve(res.statusCode));
+      }
+    );
+    req.on("error", reject);
+    req.write(payload);
+    req.end();
+  });
+}
+
+(async () => {
+  for (const item of products) {
+    const { id, ...body } = item;
+    const status = await post(body);
+    if (status !== 201) {
+      throw new Error("POST /api/products respondió " + status);
+    }
+  }
+  console.log("Cargados " + products.length + " productos");
+})().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});
+EOF
 ```
 
-Abrí http://localhost:3000. El backend solo acepta ese origen.
+Tiene que imprimir `Cargados 24 productos`. El `id` numérico del archivo no se manda: no está en el modelo del backend.
 
-Las llamadas usan estas variables. Si no están definidas, quedan en localhost. No llevan barra final.
+## 3. Variables del frontend
+
+Si no definís nada, `utils/api.js` usa estos orígenes, sin barra final:
 
 | Variable | Por defecto | Recurso |
 | --- | --- | --- |
@@ -71,9 +123,60 @@ Las llamadas usan estas variables. Si no están definidas, quedan en localhost. 
 | `NEXT_PUBLIC_CARTS_URL` | `http://localhost:8080` | `/api/carts` |
 | `NEXT_PUBLIC_BUY_URL` | `http://localhost:9090` | `/api/buy` |
 
-Los nombres están en `.env.example`, con esos mismos valores locales. Para apuntar a otro origen, copialos a `.env.local`. Next.js incorpora `NEXT_PUBLIC_*` al construir: después de cambiarlas hay que volver a correr `npm run dev` o `npm run build`.
+Los mismos valores están en `.env.example`. Para apuntar a otros orígenes, desde `NuevoProyectoReact`:
 
-`npm run lint` revisa el código y `npm run build` lo compila. Este repo no tiene un script `test`. Esos dos comandos no ejecutan pruebas de la tienda.
+```bash
+cp .env.example .env.local
+```
+
+Next.js lee `NEXT_PUBLIC_*` al arrancar `npm run dev` y al ejecutar `npm run build`. No se actualizan en caliente. En desarrollo, frená el servidor y volvé a correr `npm run dev`. En producción local, volvé a correr `npm run build` antes de `npm start`.
+
+## 4. Desarrollo
+
+Desde `NuevoProyectoReact`:
+
+```bash
+npm ci
+npm run dev
+```
+
+`npm ci` instala lo que fija `package-lock.json`. `npm run dev` es `next dev` y sirve http://localhost:3000.
+
+`npm run lint` es `next lint`. Revisa el código. No recorre la tienda. Este repo no tiene un script `test`.
+
+## 5. Producción local
+
+También desde `NuevoProyectoReact`, con el backend ya corriendo. No la levantes junto con `npm run dev`: las dos usan el puerto 3000.
+
+```bash
+npm ci
+npm run build
+npm start
+```
+
+`npm run build` es `next build`. En ese build quedan fijas las `NEXT_PUBLIC_*`. `npm start` es `next start` y sirve ese resultado en http://localhost:3000.
+
+## 6. Qué deberías ver
+
+Abrí http://localhost:3000.
+
+- La home muestra el carrusel con "WELCOME TO POWER SPORT" y, más abajo, el título SHOP.
+- Shop muestra las tarjetas Men Section y Women Section. Debajo está el listado, con MEN y WOMEN.
+- Sin backend, o sin productos cargados, ese listado queda vacío.
+- Con el catálogo del paso 2, en MEN aparece "Jersey Boca Jrs". `countInStock` empieza en 20.
+
+Para probar una compra:
+
+1. En esa tarjeta, "View Product", elegí una cantidad, "Add to Cart" y "Yes".
+2. "Cart" abre el panel. Ahí se ve la cantidad.
+3. "Remove One" saca una unidad. "Remove All" saca el ítem.
+4. "Buy Now", escribí un email y "Confirm Purchase".
+
+Si el backend envió el correo, aparece "Your purchase is confirmed.", el número de Cart vuelve a 0 y el stock de ese producto vuelve al valor anterior. En el ejemplo, Jersey Boca Jrs queda otra vez en 20.
+
+Esa vuelta del stock es deliberada. La compra no cobra ni deja el depósito descontado: el frontend repone las unidades para que la tienda se pueda probar de nuevo. No es un fallo.
+
+Si faltan las variables de correo del backend, la compra no se confirma, el carrito sigue cargado y el stock no vuelve. El sitio muestra el error. El 503 está explicado en el README del backend.
 
 ![Home y shop de Power Sport](docs/tienda.png)
 
@@ -84,7 +187,7 @@ Las URLs ya no están fijas en el código. Para salir de localhost todavía falt
 Además:
 
 - MongoDB y las variables `CONNECTION_STRING` y `BREVO_*` del backend, con un remitente verificado en Brevo.
-- El CORS del backend solo permite `http://localhost:3000`. Hay que abrirlo al origen público del sitio.
+- Con `CORS_ORIGINS` vacío, el backend solo permite `http://localhost:3000`. Para publicarla hay que poner ahí el origen del sitio.
 - Definir `NEXT_PUBLIC_PRODUCTS_URL`, `NEXT_PUBLIC_CARTS_URL` y `NEXT_PUBLIC_BUY_URL` en el build del frontend, con el origen público de cada servicio.
 - `npm audit` del 11 de noviembre de 2026 reporta 17 avisos: 2 críticos, 11 altos y 4 moderados. Los críticos están en `next` y en `form-data`. Corregirlos implica subir Next y otras dependencias, con salto de versión y riesgo de romper el build. Queda pendiente.
 - `eslint` está en 8.20.0 y `eslint-config-next` en 12.2.2, con Next 14.0.2. Alinear el config con Next 14 puede cambiar las reglas de lint. Queda pendiente.
