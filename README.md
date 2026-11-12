@@ -40,6 +40,11 @@ El backend tiene que estar corriendo antes que la tienda. En `ProyectoBackendSer
 ```bash
 cd ProyectoBackendServer
 cp .env.example .env
+```
+
+Antes de `npm start`, en ese `.env` tiene que estar `CONNECTION_STRING` con la URI de MongoDB. Si queda vacía, el proceso termina con `Falta configurar CONNECTION_STRING.` y no abre los puertos. El ejemplo de URI y el resto de las variables están en el [README del backend](https://github.com/simondelasheras/ProyectoBackendServer/blob/dev/README.md).
+
+```bash
 npm install
 npm start
 ```
@@ -54,7 +59,7 @@ npm start
 
 Dejá esa terminal abierta. Este repo no levanta esos servicios. Si `PORT` se deja vacío, el backend usa los mismos tres puertos.
 
-En el `.env` del backend, `CONNECTION_STRING` es la URI de MongoDB. `CORS_ORIGINS` vacío vale `http://localhost:3000`. Abrí la tienda en http://localhost:3000. `http://127.0.0.1:3000` es otro origen: el navegador bloquea las llamadas a la API. Para usarlo, poné ese origen en `CORS_ORIGINS` y reiniciá el backend.
+`CORS_ORIGINS` vacío vale `http://localhost:3000`. Abrí la tienda en http://localhost:3000. `http://127.0.0.1:3000` es otro origen: el navegador bloquea las llamadas a la API. Para usarlo, poné ese origen en `CORS_ORIGINS` y reiniciá el backend.
 
 El correo usa las variables `BREVO_*` de ese mismo README. Si faltan usuario, clave o remitente, `POST /api/buy` responde 503 y no envía nada. El host por defecto es `smtp-relay.brevo.com` y el puerto por defecto es 587. Este frontend no simula una bandeja.
 
