@@ -67,7 +67,13 @@ El correo usa las variables `BREVO_*` de ese mismo README. Si faltan usuario, cl
 
 La tienda no lee `utils/db.json`. El listado sale de `GET /api/products` en el backend.
 
-Ese archivo es el catálogo de ejemplo: 24 productos. Cargalo con el backend ya escuchando, desde `NuevoProyectoReact`:
+Ese archivo es el catálogo de ejemplo: 24 productos. Cargalo desde `NuevoProyectoReact`, con el backend ya escuchando en el puerto 5050. Elegí uno de los dos scripts. Los dos hacen lo mismo.
+
+`POST /api/products` crea un documento nuevo cada vez. No hay índice único ni un `DELETE` de productos: una segunda pasada sin control responde 201 otra vez y deja 48. Los scripts primero hacen `GET /api/products`. Si ya hay alguno, no envían nada y no borran lo que está. La primera vez tiene que imprimir `Cargados 24 productos`. La segunda, `Ya hay 24 productos. No se vuelve a cargar.`
+
+El `id` numérico del archivo no se manda: no está en el modelo. El `Content-Type` tiene que ser exactamente `application/json`. Si se agrega `; charset=utf-8`, el backend responde 400. El cuerpo igual va en UTF-8, así un nombre con acento o eñe no se corta.
+
+### Bash
 
 ```bash
 cd NuevoProyectoReact
@@ -77,35 +83,52 @@ const http = require("http");
 
 const { products } = JSON.parse(fs.readFileSync("utils/db.json", "utf8"));
 
-function post(body) {
-  const payload = JSON.stringify(body);
+function request(method, body) {
+  const payload = body ? JSON.stringify(body) : null;
   return new Promise((resolve, reject) => {
     const req = http.request(
       "http://localhost:5050/api/products",
       {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Content-Length": Buffer.byteLength(payload),
-        },
+        method,
+        headers: payload
+          ? {
+              "Content-Type": "application/json",
+              "Content-Length": Buffer.byteLength(payload),
+            }
+          : {},
       },
       (res) => {
-        res.resume();
-        res.on("end", () => resolve(res.statusCode));
+        const chunks = [];
+        res.on("data", (chunk) => chunks.push(chunk));
+        res.on("end", () => {
+          resolve({
+            status: res.statusCode,
+            body: Buffer.concat(chunks).toString("utf8"),
+          });
+        });
       }
     );
     req.on("error", reject);
-    req.write(payload);
+    if (payload) req.write(payload);
     req.end();
   });
 }
 
 (async () => {
+  const current = await request("GET");
+  const list = JSON.parse(current.body);
+  if (!Array.isArray(list)) {
+    throw new Error("GET /api/products no devolvió un arreglo");
+  }
+  if (list.length > 0) {
+    console.log("Ya hay " + list.length + " productos. No se vuelve a cargar.");
+    return;
+  }
   for (const item of products) {
     const { id, ...body } = item;
-    const status = await post(body);
-    if (status !== 201) {
-      throw new Error("POST /api/products respondió " + status);
+    const result = await request("POST", body);
+    if (result.status !== 201) {
+      throw new Error("POST /api/products respondió " + result.status);
     }
   }
   console.log("Cargados " + products.length + " productos");
@@ -116,7 +139,50 @@ function post(body) {
 EOF
 ```
 
-Tiene que imprimir `Cargados 24 productos`. El `id` numérico del archivo no se manda: no está en el modelo del backend.
+### PowerShell
+
+En Windows PowerShell 5.1, `curl` es un alias de `Invoke-WebRequest`. Este script no lo usa: llama a `Invoke-RestMethod`. El cuerpo se manda como bytes UTF-8. `ConvertTo-Json -Depth 5` alcanza porque cada producto es un objeto plano.
+
+Estas líneas sirven en Windows PowerShell 5.1 y en PowerShell 7. La corrida de comprobación de este README se hizo con PowerShell 7, no con Windows PowerShell 5.1.
+
+```powershell
+Set-Location NuevoProyectoReact
+$ErrorActionPreference = "Stop"
+
+function Get-ProductCount($value) {
+  if ($null -eq $value) { return 0 }
+  return @($value).Count
+}
+
+$existing = Invoke-RestMethod -Uri "http://localhost:5050/api/products" -Method Get
+$existingCount = Get-ProductCount $existing
+if ($existingCount -gt 0) {
+  Write-Host "Ya hay $existingCount productos. No se vuelve a cargar."
+  exit 0
+}
+
+$catalog = Get-Content -Raw -Encoding UTF8 -Path "utils/db.json" | ConvertFrom-Json
+foreach ($item in $catalog.products) {
+  $body = $item | Select-Object -Property * -ExcludeProperty id
+  $json = $body | ConvertTo-Json -Depth 5 -Compress
+  $bytes = [System.Text.Encoding]::UTF8.GetBytes($json)
+  Invoke-RestMethod `
+    -Uri "http://localhost:5050/api/products" `
+    -Method Post `
+    -Body $bytes `
+    -ContentType "application/json" | Out-Null
+}
+
+Write-Host "Cargados $($catalog.products.Count) productos"
+```
+
+Si una carga se corta a la mitad, el `GET` ya ve productos y la siguiente pasada no completa el catálogo. No hay una ruta HTTP para borrarlos. `DELETE` existe solo para un ítem del carrito (`/api/carts/:id`), no para el catálogo. En una base local de prueba, y sabiendo que se pierde el catálogo, se puede vaciar la colección `products` con mongosh:
+
+```bash
+mongosh "$CONNECTION_STRING" --eval 'db.products.deleteMany({})'
+```
+
+No uses eso contra una base que quieras conservar.
 
 ## 3. Variables del frontend
 
