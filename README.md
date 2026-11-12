@@ -65,11 +65,15 @@ El correo usa las variables `BREVO_*` de ese mismo README. Si faltan usuario, cl
 
 ## 2. Productos
 
+<a id="cargar-los-24-productos"></a>
+
 La tienda no lee `utils/db.json`. El listado sale de `GET /api/products` en el backend.
 
-Ese archivo es el catálogo de ejemplo: 24 productos. Cargalo desde `NuevoProyectoReact`, con el backend ya escuchando en el puerto 5050. Elegí uno de los dos scripts. Los dos hacen lo mismo.
+El README del backend muestra el alta de un solo producto. Los 24 de `utils/db.json` se cargan acá, en esta sección (`cargar-los-24-productos`).
 
-`POST /api/products` crea un documento nuevo cada vez. No hay índice único ni un `DELETE` de productos: una segunda pasada sin control responde 201 otra vez y deja 48. Los scripts primero hacen `GET /api/products`. Si ya hay alguno, no envían nada y no borran lo que está. La primera vez tiene que imprimir `Cargados 24 productos`. La segunda, `Ya hay 24 productos. No se vuelve a cargar.`
+Ese archivo es el catálogo de ejemplo: 24 productos. Cargalo desde la carpeta `NuevoProyectoReact`, con el backend ya escuchando en el puerto 5050. Elegí uno de los dos bloques. Los dos hacen lo mismo.
+
+`POST /api/products` crea un documento nuevo cada vez. No hay índice único ni un `DELETE` de productos: una segunda pasada sin control responde 201 otra vez y deja 48. Los bloques primero hacen `GET /api/products`. Si la respuesta no es `[]`, no envían nada y no borran lo que está. La primera vez tiene que imprimir `Cargados 24 productos`. La segunda, `Ya hay 24 productos. No se vuelve a cargar.`
 
 El `id` numérico del archivo no se manda: no está en el modelo. El `Content-Type` tiene que ser exactamente `application/json`. Si se agrega `; charset=utf-8`, el backend responde 400. El cuerpo igual va en UTF-8, así un nombre con acento o eñe no se corta.
 
@@ -141,39 +145,30 @@ EOF
 
 ### PowerShell
 
-En Windows PowerShell 5.1, `curl` es un alias de `Invoke-WebRequest`. Este script no lo usa: llama a `Invoke-RestMethod`. El cuerpo se manda como bytes UTF-8. `ConvertTo-Json -Depth 5` alcanza porque cada producto es un objeto plano.
+Corré el bloque desde la carpeta `NuevoProyectoReact`. No cambia de carpeta ni toca preferencias de la sesión.
 
-Estas líneas sirven en Windows PowerShell 5.1 y en PowerShell 7. La corrida de comprobación de este README se hizo con PowerShell 7, no con Windows PowerShell 5.1.
+En Windows PowerShell 5.1, `curl` es un alias de `Invoke-WebRequest`. Este bloque no lo usa. El listado se lee con `Invoke-WebRequest -UseBasicParsing` y el alta con `Invoke-RestMethod`. El cuerpo se manda como bytes UTF-8. `ConvertTo-Json -Depth 5` hace falta porque en 5.1 el `-Depth` por defecto es 2. `-ErrorAction` existe en 5.1. `-ProgressAction` no, y este bloque no lo usa.
+
+El bloque va entre `& {` y `}`. Si el catálogo ya está, el `else` no corre y la consola sigue abierta. No se probó en Windows PowerShell 5.1. La comprobación se hizo con PowerShell 7.
 
 ```powershell
-Set-Location NuevoProyectoReact
-$ErrorActionPreference = "Stop"
-
-function Get-ProductCount($value) {
-  if ($null -eq $value) { return 0 }
-  return @($value).Count
+& {
+  $response = Invoke-WebRequest -Uri "http://localhost:5050/api/products" -UseBasicParsing -ErrorAction Stop
+  if ($response.Content.Trim() -ne "[]") {
+    $existing = @(ConvertFrom-Json -InputObject $response.Content)
+    Write-Host ("Ya hay {0} productos. No se vuelve a cargar." -f $existing.Count)
+  }
+  else {
+    $catalog = Get-Content -Raw -Encoding UTF8 -Path "utils/db.json" -ErrorAction Stop | ConvertFrom-Json
+    foreach ($item in $catalog.products) {
+      $body = $item | Select-Object -Property * -ExcludeProperty id
+      $json = $body | ConvertTo-Json -Depth 5 -Compress
+      $bytes = [System.Text.Encoding]::UTF8.GetBytes($json)
+      Invoke-RestMethod -Uri "http://localhost:5050/api/products" -Method Post -Body $bytes -ContentType "application/json" -ErrorAction Stop | Out-Null
+    }
+    Write-Host ("Cargados {0} productos" -f @($catalog.products).Count)
+  }
 }
-
-$existing = Invoke-RestMethod -Uri "http://localhost:5050/api/products" -Method Get
-$existingCount = Get-ProductCount $existing
-if ($existingCount -gt 0) {
-  Write-Host "Ya hay $existingCount productos. No se vuelve a cargar."
-  exit 0
-}
-
-$catalog = Get-Content -Raw -Encoding UTF8 -Path "utils/db.json" | ConvertFrom-Json
-foreach ($item in $catalog.products) {
-  $body = $item | Select-Object -Property * -ExcludeProperty id
-  $json = $body | ConvertTo-Json -Depth 5 -Compress
-  $bytes = [System.Text.Encoding]::UTF8.GetBytes($json)
-  Invoke-RestMethod `
-    -Uri "http://localhost:5050/api/products" `
-    -Method Post `
-    -Body $bytes `
-    -ContentType "application/json" | Out-Null
-}
-
-Write-Host "Cargados $($catalog.products.Count) productos"
 ```
 
 Si una carga se corta a la mitad, el `GET` ya ve productos y la siguiente pasada no completa el catálogo. No hay una ruta HTTP para borrarlos. `DELETE` existe solo para un ítem del carrito (`/api/carts/:id`), no para el catálogo. En una base local de prueba, y sabiendo que se pierde el catálogo, se puede vaciar la colección `products` con mongosh:
