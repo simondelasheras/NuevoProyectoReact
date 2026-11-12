@@ -155,8 +155,8 @@ El bloque va entre `& {` y `}`. Si el catálogo ya está, el `else` no corre y l
 & {
   $response = Invoke-WebRequest -Uri "http://localhost:5050/api/products" -UseBasicParsing -ErrorAction Stop
   if ($response.Content.Trim() -ne "[]") {
-    $existing = @(ConvertFrom-Json -InputObject $response.Content)
-    Write-Host ("Ya hay {0} productos. No se vuelve a cargar." -f $existing.Count)
+    $existing = ConvertFrom-Json -InputObject $response.Content
+    Write-Host ("Ya hay {0} productos. No se vuelve a cargar." -f @($existing).Count)
   }
   else {
     $catalog = Get-Content -Raw -Encoding UTF8 -Path "utils/db.json" -ErrorAction Stop | ConvertFrom-Json
